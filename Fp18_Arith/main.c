@@ -18,12 +18,12 @@ int main(void)
 {
     mpz_init(X);
     mpz_set_str(X,"18446893747415302274",10);//192bit
-   
-
+    
+    
     
     mpz_init(prime);
-//  mpz_set_str(prime,"7",10);
-mpz_set_str(prime,"638508488753389092195439720208817843316062995515124574544010783086949264599518591426924070465759719017041310253064889352571109595156203400346010025740431",10);
+    //  mpz_set_str(prime,"7",10);
+    mpz_set_str(prime,"638508488753389092195439720208817843316062995515124574544010783086949264599518591426924070465759719017041310253064889352571109595156203400346010025740431",10);
     mpz_init(r_order);
     mpz_init(r_order_EFp);
     mpz_init(t_trace);
@@ -33,12 +33,7 @@ mpz_set_str(prime,"6385084887533890921954397202088178433160629955151245745440107
     mpz_init(c1_omega);
     mpz_init(c1_omega_bar);
     
-//    getParameters(512);
-    
-//    get_C1_C1bar();
-//    get_C1omega_C1omegabar();
-    
-    EFp_set_EC_parameter();
+    generate_parameters();
     gmp_printf("p=%Zd\n",prime);
     gmp_printf("r=%Zd\n",r_order);
     gmp_printf("t=%Zd\n",t_trace);
@@ -49,61 +44,61 @@ mpz_set_str(prime,"6385084887533890921954397202088178433160629955151245745440107
     printf("t = %d bit\n",(int)mpz_sizeinbase(t_trace,2));
     gmp_printf("y^2=x^3+%Zd\n",b);
     
-//    struct Fp3 P,RES,RES1,Q;
-//    Fp3_init(&P);
-//    Fp3_init(&Q);
-//    Fp3_init(&RES);
-//    Fp3_init(&RES1);
-//    Fp3_take_input(&P);
-//    Fp3_invert(&RES, &P);
-//    printf("new\n");
-//    Fp3_printf(&RES);
-//    Fp3_invert_prev(&RES1, &P);
-//    printf("prev\n");
-//    Fp3_printf(&RES1);
+    //    struct Fp3 P,RES,RES1,Q;
+    //    Fp3_init(&P);
+    //    Fp3_init(&Q);
+    //    Fp3_init(&RES);
+    //    Fp3_init(&RES1);
+    //    Fp3_take_input(&P);
+    //    Fp3_invert(&RES, &P);
+    //    printf("new\n");
+    //    Fp3_printf(&RES);
+    //    Fp3_invert_prev(&RES1, &P);
+    //    printf("prev\n");
+    //    Fp3_printf(&RES1);
     
-//    struct Fp6 P,RES,RES1,Q;
-//    Fp6_init(&P);
-//    Fp6_init(&Q);
-//    Fp6_init(&RES);
-//    Fp6_init(&RES1);
-//    Fp6_take_input(&P);
-//    Fp6_invert(&RES, &P);
-//    printf("new\n");
-//    Fp6_printf(&RES);
-//    Fp6_invert_prev(&RES1, &P);
-//    printf("prev\n");
-//    Fp6_printf(&RES1);
+    //    struct Fp6 P,RES,RES1,Q;
+    //    Fp6_init(&P);
+    //    Fp6_init(&Q);
+    //    Fp6_init(&RES);
+    //    Fp6_init(&RES1);
+    //    Fp6_take_input(&P);
+    //    Fp6_invert(&RES, &P);
+    //    printf("new\n");
+    //    Fp6_printf(&RES);
+    //    Fp6_invert_prev(&RES1, &P);
+    //    printf("prev\n");
+    //    Fp6_printf(&RES1);
     
-//    struct Fp18 P,RES,RES1,Q;
-//    Fp18_init(&P);
-//    Fp18_init(&Q);
-//    Fp18_init(&RES);
-//    Fp18_init(&RES1);
-//    Fp18_take_input(&P);
-////    Fp18_take_input(&Q);
-////    Fp18_mul(&RES, &P, &Q);
-//    Fp18_invert(&RES, &P);
-//    printf("new\n");
-//    Fp18_printf(&RES);
-//    Fp18_invert_prev(&RES1, &P);
-//    printf("prev\n");
-//    Fp18_printf(&RES1);
+    //    struct Fp18 P,RES,RES1,Q;
+    //    Fp18_init(&P);
+    //    Fp18_init(&Q);
+    //    Fp18_init(&RES);
+    //    Fp18_init(&RES1);
+    //    Fp18_take_input(&P);
+    ////    Fp18_take_input(&Q);
+    ////    Fp18_mul(&RES, &P, &Q);
+    //    Fp18_invert(&RES, &P);
+    //    printf("new\n");
+    //    Fp18_printf(&RES);
+    //    Fp18_invert_prev(&RES1, &P);
+    //    printf("prev\n");
+    //    Fp18_printf(&RES1);
     
-
     
-
-//     struct EFp18 P,Q;
-//    
-//     EFp18_init(&P);
-//     EFp18_init(&Q);
-//    
-//     EFp18_random_set_for_Ate(&P);
-//     EFp18_frobenius_map(&Q,&P);
-//     EFp18_printf(&Q);
-//     EFp18_SCM(&P,&P,prime);
-//     EFp18_printf(&P);
-//     printf("%d\n",EFp18_cmp(&P,&Q));
+    
+    
+    //     struct EFp18 P,Q;
+    //
+    //     EFp18_init(&P);
+    //     EFp18_init(&Q);
+    //
+    //     EFp18_random_set_for_Ate(&P);
+    //     EFp18_frobenius_map(&Q,&P);
+    //     EFp18_printf(&Q);
+    //     EFp18_SCM(&P,&P,prime);
+    //     EFp18_printf(&P);
+    //     printf("%d\n",EFp18_cmp(&P,&Q));
     
     mpz_clear(prime);
     mpz_clear(r_order);
@@ -129,7 +124,7 @@ void Fp_take_input(struct Fp *RES)
     assert(flag == 0);
     
     Fp_set(RES,&tmp);
-//    Fp_printf(RES);
+    //    Fp_printf(RES);
     Fp_clear(&tmp);
 }
 
@@ -137,7 +132,7 @@ void Fp3_take_input(struct Fp3 *RES)
 {
     struct Fp3 tmp;
     Fp3_init(&tmp);
-//    printf ("Will take 3 Fp element:\n");
+    
     Fp_take_input(&tmp.a0);
     Fp_take_input(&tmp.a1);
     Fp_take_input(&tmp.a2);
@@ -162,7 +157,7 @@ void Fp18_take_input(struct Fp18 *RES)
 {
     struct Fp18 tmp;
     Fp18_init(&tmp);
-    //    printf ("Will take 3 Fp element:\n");
+    
     Fp6_take_input(&tmp.m0);
     Fp6_take_input(&tmp.m1);
     Fp6_take_input(&tmp.m2);
@@ -315,7 +310,7 @@ void Fp_pow(struct Fp *RES,struct Fp *A,mpz_t B){//RES = A^B
     length= (unsigned long long)mpz_sizeinbase(B,2);
     char B_binary[length];
     mpz_get_str(B_binary,2,B);
-//    printf("Length: %lld\n",length);
+    //    printf("Length: %lld\n",length);
     //    printf("p: %s\n",&B_binary[0]);
     
     struct Fp tmp,dumy;
@@ -626,10 +621,10 @@ void Fp3_mul(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
     
     //ab = (t0 + c1t3) + (t1 + c1t4)ω + t2ω2.
     Fp_mul_c1(&tmp, &t3);
-//    Fp_mul_ui(&tmp,&t3,C1);
+    //    Fp_mul_ui(&tmp,&t3,C1);
     Fp_add(&t_RES.a0, &tmp, &t0);
     Fp_mul_c1(&tmp, &t4);
-//    Fp_mul_ui(&tmp,&t4,C1);
+    //    Fp_mul_ui(&tmp,&t4,C1);
     Fp_add(&t_RES.a1, &tmp, &t1);
     Fp_set(&t_RES.a2, &t2);
     
@@ -690,45 +685,6 @@ void Fp3_mul_Fp(struct Fp3 *RES,struct Fp3 *A,struct Fp *B){
     Fp3_clear(&tmp);
 }
 
-void get_C1_C1bar(){
-    mpz_t prime_m1,p_m1_d3;
-    mpz_init(prime_m1);
-    mpz_init(p_m1_d3);
-
-    mpz_set_ui(c1_leg,C1);
-    
-    mpz_sub_ui(prime_m1,prime,1);
-    mpz_cdiv_q_ui(p_m1_d3,prime_m1,3);
-    mpz_powm(c1_leg,c1_leg,p_m1_d3,prime);
-    mpz_powm_ui(c1_leg_bar,c1_leg,2,prime);
-    
-//    gmp_printf("C1=%Zd,\n C1^2=%Zd\n",c1_leg,c1_leg_bar);
-    
-    mpz_clear(prime_m1);
-    mpz_clear(p_m1_d3);
-}
-
-void get_C1omega_C1omegabar(){
-    mpz_t p6_m1,q_p_m1_d9;
-    mpz_init(p6_m1);
-    mpz_init(q_p_m1_d9);
-    
-    mpz_set_ui(c1_omega,C1);
-    
-    mpz_pow_ui(p6_m1,prime,6);
-//    gmp_printf("p6_m1=%Zd,\n c1_omega=%Zd\n",p6_m1,c1_omega);
-    mpz_sub_ui(p6_m1,p6_m1,1);
-    mpz_mod(p6_m1,p6_m1,prime);
-    mpz_cdiv_q_ui(q_p_m1_d9,p6_m1,9);
-    mpz_powm(c1_omega,c1_omega,q_p_m1_d9,prime);
-    mpz_powm_ui(c1_omega_bar,c1_omega,2,prime);
-//    gmp_printf("C1_omg=%Zd,\n C1_omg^2=%Zd\n",c1_omega,c1_omega_bar);
-    
-    mpz_clear(p6_m1);
-    mpz_clear(q_p_m1_d9);
-}
-
-
 //a^−1 = n(a)^−1(a^q*a^q^2 ),
 void Fp3_frobenious_conjugate(struct Fp3 *RES,struct Fp3 *A){
     struct Fp3 t_RES;
@@ -763,7 +719,7 @@ void Fp3_invert(struct Fp3 *RES, struct Fp3 *A){
     Fp3_frobenious_conjugate(&Aqsq,&t_Aq);
     Fp3_mul(&AqAqsq, &Aq, &Aqsq);
     Fp3_mul(&t_norm, &AqAqsq, A);
-
+    
     struct Fp norm,T0;
     Fp_init(&norm);
     Fp_init(&T0);
@@ -859,7 +815,7 @@ void Fp3_pow(struct Fp3 *RES,struct Fp3 *A,mpz_t B){
     int i;
     int r;//bit数
     r= (int)mpz_sizeinbase(B,2);
-//    printf("r= %d\n",r);
+    //    printf("r= %d\n",r);
     
     struct Fp3 res_tmp;
     Fp3_init(&res_tmp);
@@ -1176,7 +1132,7 @@ void Fp6_mul_Fp(struct Fp6 *RES,struct Fp6 *A,struct Fp *B){
 void Fp6_invert(struct Fp6 *RES, struct Fp6 *A){
     struct Fp6 tmp;
     Fp6_init(&tmp);
-
+    
     //(m^q^3 )= a0−a1τ
     Fp3_set(&tmp.a0,&A->a0);
     Fp3_neg(&tmp.a1,&A->a1);
@@ -1185,7 +1141,7 @@ void Fp6_invert(struct Fp6 *RES, struct Fp6 *A){
     Fp3_init(&norm);
     Fp3_init(&a);
     Fp3_init(&b);
-   
+    
     //n(m)=a0^2+a1^2
     Fp3_mul(&a,&A->a0,&A->a0); // a=a0^2
     Fp3_mul(&b,&A->a1,&A->a1); // b=a1^2
@@ -1643,7 +1599,7 @@ void Fp18_invert(struct Fp18 *RES, struct Fp18 *A){
         printf("Fp18 Norm func calculation goes wrong\n");
         exit(0);
     }
-
+    
     Fp6_set(&T0, &t_norm.m0);
     Fp6_invert(&norm, &T0);
     Fp6_mul(&t_RES.m0, &AqAqsq.m0, &norm);
@@ -2690,17 +2646,17 @@ void EFp18_random_set_for_Ate(struct EFp18 *RES){
     EFp18_clear(&tmp_EFp18);
 }
 
-//-----------------------------------------------------------------------------------------
 #pragma mark Parameters method implementations
-void EFp_set_EC_parameter(void){
-    
-    mpz_t p_tmp,r_tmp,t_tmp;
+void generate_parameters(void){
+    mpz_t p_tmp,r_tmp,t_tmp,mod4,p_m1;
     mpz_t xpow2,xpow3,xpow4,xpow5,xpow6,xpow7,xpow8;
     mpz_t tmp1,tmp2;
     
     mpz_init(p_tmp);
     mpz_init(r_tmp);
     mpz_init(t_tmp);
+    mpz_init(mod4);
+    mpz_init(p_m1);
     
     mpz_init(xpow2);
     mpz_init(xpow3);
@@ -2742,42 +2698,92 @@ void EFp_set_EC_parameter(void){
     //r = p+1-t
     mpz_add_ui(r_order_EFp,prime,1);
     mpz_sub(r_order_EFp,r_order_EFp,t_trace);
-
-    if(mpz_probab_prime_p(prime,25)>=0){
+    
+    mpz_mod_ui(mod4,prime,4);
+    unsigned long m4 = mpz_get_ui(mod4);
+    
+    mpz_sub_ui(p_m1,prime,1);
+    mpz_cdiv_r_ui(tmp1,p_m1,3);
+    unsigned long r = mpz_get_ui(tmp1);
+    
+CHECK_PRIME:if(mpz_probab_prime_p(prime,25)==1 && m4 == 3 && r == 0){
+    
+    mpz_set(p_tmp,prime);
+    mpz_t prime_m1,p_m1_d3,c2_tmp;
+    mpz_init(prime_m1);
+    mpz_init(c2_tmp);
+    mpz_init(p_m1_d3);
+    
+    mpz_set_ui(c1_leg,C1);
+    mpz_set_ui(c2_tmp,C2);
+    
+    mpz_sub_ui(prime_m1,p_tmp,1);
+    mpz_cdiv_q_ui(p_m1_d3,prime_m1,3);
+    mpz_powm(c1_leg,c1_leg,p_m1_d3,p_tmp);
+    mpz_powm_ui(c1_leg_bar,c1_leg,2,p_tmp);
+    //    gmp_printf("C1=%Zd,\n C1^2=%Zd\n",c1_leg,c1_leg_bar);
+    
+    mpz_t p6_m1,q_p_m1_d9;
+    mpz_init(p6_m1);
+    mpz_init(q_p_m1_d9);
+    
+    mpz_set_ui(c1_omega,C1);
+    
+    mpz_pow_ui(p6_m1,p_tmp,6);
+    mpz_sub_ui(p6_m1,p6_m1,1);
+    mpz_mod(p6_m1,p6_m1,p_tmp);
+    mpz_cdiv_q_ui(q_p_m1_d9,p6_m1,9);
+    mpz_powm(c1_omega,c1_omega,q_p_m1_d9,p_tmp);
+    mpz_powm_ui(c1_omega_bar,c1_omega,2,p_tmp);
+    //    gmp_printf("C1_omg=%Zd,\n C1_omg^2=%Zd\n",c1_omega,c1_omega_bar);
+    
+    int leg = mpz_legendre(c2_tmp,p_tmp);
+    
+    mpz_clear(prime_m1);
+    mpz_clear(p_m1_d3);
+    mpz_clear(p6_m1);
+    mpz_clear(q_p_m1_d9);
+    
+    if ((mpz_cmp_ui(c1_leg,0) != 0 &&  mpz_cmp_ui(c1_leg,1) != 0) && leg == -1)
+    {
+        gmp_printf("%Zd\n",X);
+        mpz_set(prime,p_tmp);
+        gmp_printf("p:%Zd\n",p_tmp);
+        printf("p = %dbit\n\n\n",(int)mpz_sizeinbase(p_tmp,2));
+    }
+}
+else
+{
+    //p=1/21(x^8+5x^7+7x^6+37x^5+188x^4+259x^3+343x^2+1763x+2401)
+    mpz_mul_ui(tmp1,xpow7,5);
+    mpz_add(p_tmp,tmp1,xpow8);
+    mpz_mul_ui(tmp1,xpow6,7);
+    mpz_add(p_tmp,tmp1,p_tmp);
+    mpz_mul_ui(tmp1,xpow5,37);
+    mpz_add(p_tmp,tmp1,p_tmp);
+    mpz_mul_ui(tmp1,xpow4,188);
+    mpz_add(p_tmp,tmp1,p_tmp);
+    mpz_mul_ui(tmp1,xpow3,259);
+    mpz_add(p_tmp,tmp1,p_tmp);
+    mpz_mul_ui(tmp1,xpow2,343);
+    mpz_add(p_tmp,tmp1,p_tmp);
+    mpz_mul_ui(tmp1,X,1763);
+    mpz_add(p_tmp,tmp1,p_tmp);
+    mpz_add_ui(p_tmp,p_tmp,2401);
+    
+    mpz_div_ui(prime,p_tmp,21);
+    
+    if(mpz_probab_prime_p(prime,25)==0){
         gmp_printf("p:%Zd\n",prime);
-        
+        printf("not  prime number!\n");
+        exit(0);
     }
     else
     {
-        //p=1/21(x^8+5x^7+7x^6+37x^5+188x^4+259x^3+343x^2+1763x+2401)
-        mpz_mul_ui(tmp1,xpow7,5);
-        mpz_add(p_tmp,tmp1,xpow8);
-        mpz_mul_ui(tmp1,xpow6,7);
-        mpz_add(p_tmp,tmp1,p_tmp);
-        mpz_mul_ui(tmp1,xpow5,37);
-        mpz_add(p_tmp,tmp1,p_tmp);
-        mpz_mul_ui(tmp1,xpow4,188);
-        mpz_add(p_tmp,tmp1,p_tmp);
-        mpz_mul_ui(tmp1,xpow3,259);
-        mpz_add(p_tmp,tmp1,p_tmp);
-        mpz_mul_ui(tmp1,xpow2,343);
-        mpz_add(p_tmp,tmp1,p_tmp);
-        mpz_mul_ui(tmp1,X,1763);
-        mpz_add(p_tmp,tmp1,p_tmp);
-        mpz_add_ui(p_tmp,p_tmp,2401);
-        
-        mpz_div_ui(prime,p_tmp,21);
-        
-        if(mpz_probab_prime_p(prime,25)==0){
-            gmp_printf("p:%Zd\n",prime);
-            printf("not  prime number!\n");
-            exit(0);
-        }
+        goto CHECK_PRIME;
     }
+}
     
- 
-    get_C1_C1bar();
-    get_C1omega_C1omegabar();
     
     struct EFp P,RES;
     int legendle;
@@ -2817,172 +2823,41 @@ void EFp_set_EC_parameter(void){
     return;
 }
 
-//-----------------------------------------------------------------------------------------
-
-int getParameters(int bit){
+void get_C1_C1bar(){
+    mpz_t prime_m1,p_m1_d3;
+    mpz_init(prime_m1);
+    mpz_init(p_m1_d3);
     
-    mpz_t p_tmp,r_tmp;
-    mpz_t xpow2,xpow3,xpow4,xpow5,xpow6,xpow7,xpow8;
-    mpz_t tmp1,tmp2;
+    mpz_set_ui(c1_leg,C1);
     
-    mpz_init(p_tmp);
-    mpz_init(r_tmp);
+    mpz_sub_ui(prime_m1,prime,1);
+    mpz_cdiv_q_ui(p_m1_d3,prime_m1,3);
+    mpz_powm(c1_leg,c1_leg,p_m1_d3,prime);
+    mpz_powm_ui(c1_leg_bar,c1_leg,2,prime);
     
-    mpz_init(xpow2);
-    mpz_init(xpow3);
-    mpz_init(xpow4);
-    mpz_init(xpow5);
-    mpz_init(xpow6);
-    mpz_init(xpow7);
-    mpz_init(xpow8);
+    gmp_printf("C1=%Zd,\n C1^2=%Zd\n",c1_leg,c1_leg_bar);
     
-    mpz_init(tmp1);
-    mpz_init(tmp2);
-    
-    mpz_tdiv_r_ui(tmp1,X,42); //tmp1 = x/42 | x = 14(mod 42)
-    while(mpz_cmp_ui(tmp1,14)!=0){
-        mpz_add_ui(X,X,1);
-        mpz_tdiv_r_ui(tmp1,X,42);
-    }
-    
-    mpz_t tmp,mod;
-    mpz_init(tmp);
-    mpz_init(mod);
-    unsigned long int j,k,l;
-    mpz_set_ui(mod,3);
-    
-    long long int count192p = 0;
-    long long int count192p_cond = 0;
-    
-    FILE *fp;
-    fp=fopen("Primes.csv","a");
-    
-    if(fp == NULL){
-        printf("Couldn't open file\n");
-    }
-    gmp_fprintf(fp,"X,HW,Prime,Bits\n");
-    
-    for(;;){
-        mpz_mul(xpow2,X,X);
-        mpz_mul(xpow3,xpow2,X);
-        mpz_mul(xpow4,xpow2,xpow2);
-        mpz_mul(xpow5,xpow4,X);
-        mpz_mul(xpow6,xpow3,xpow3);
-        mpz_mul(xpow7,xpow6,X);
-        mpz_mul(xpow8,xpow4,xpow4);
-        
-        mpz_mul_ui(tmp1,xpow3,37);//37x^3
-        mpz_add_ui(tmp2,xpow6,343);//x^6 + 343
-        mpz_add(r_tmp,tmp1,tmp2);// x^6 + 37x^3 + 343
-        
-        
-        mpz_mul_ui(tmp1,xpow7,5);// 5x^7
-        mpz_add(p_tmp,tmp1,xpow8);// x^8+5x^7
-        mpz_mul_ui(tmp1,xpow6,7);// 7x^6
-        mpz_add(p_tmp,tmp1,p_tmp);// x^8 + 5x^7 + 7x^6
-        mpz_mul_ui(tmp1,xpow5,37);// 37x^5
-        mpz_add(p_tmp,tmp1,p_tmp);// x^8 + 5x^7 + 7x^6 + 37x^5
-        mpz_mul_ui(tmp1,xpow4,188); // 188x^4
-        mpz_add(p_tmp,tmp1,p_tmp);// x^8 + 5x^7 + 7x^6 + 37x^5 +  188x^4
-        mpz_mul_ui(tmp1,xpow3,259); // 259x^3
-        mpz_add(p_tmp,tmp1,p_tmp); // x^8 + 5x^7 + 7x^6 + 37x^5 +  188x^4 + 259x^3
-        mpz_mul_ui(tmp1,xpow2,343); // 343x^2
-        mpz_add(p_tmp,tmp1,p_tmp); // x^8 + 5x^7 + 7x^6 + 37x^5 +  188x^4 + 259x^3 + 343x^2
-        mpz_mul_ui(tmp1,X,1763); //1763x
-        mpz_add(p_tmp,tmp1,p_tmp); // x^8 + 5x^7 + 7x^6 + 37x^5 +  188x^4 + 259x^3 +1763x
-        mpz_add_ui(p_tmp,p_tmp,2401);// x^8 + 5x^7 + 7x^6 + 37x^5 +  188x^4 + 259x^3 +1763x + 2401
-        
-        mpz_tdiv_r_ui(tmp1,p_tmp,21);
-        
-        
-        if(mpz_cmp_ui(tmp1,0)==0){
-            mpz_div_ui(p_tmp,p_tmp,21);
-            // gmp_printf("%Zd\n",p_tmp);
-            
-            mpz_pow_ui(tmp,p_tmp,18);
-            mpz_sub_ui(tmp,tmp,1);
-            mpz_tdiv_r(tmp2,tmp,r_tmp);
-            
-            if(mpz_cmp_ui(tmp2,0)==0){
-                // printf("afh\n");
-                mpz_sub_ui(tmp,p_tmp,1); //tmp = p-1
-                mpz_mod(tmp,tmp,mod); // tmp = p-1/3
-                k=mpz_get_ui(tmp);
-                
-                j=mpz_probab_prime_p(p_tmp,25);
-                mpz_add_ui(tmp,p_tmp,1);
-                mpz_tdiv_r_ui(tmp,tmp,4);
-                l=mpz_get_ui(tmp);
-                // i=mpz_probab_prime_p(r_tmp,25);
-                
-                if(k == 0 && j >= 1 && l==0)
-                {
-                    count192p++;
-                    if ((int)mpz_sizeinbase(p_tmp,2) <341)
-                    {
-                        printf("Got it %lld\n",count192p);
-                        continue;
-                    }
-                    
-                    
-                    
-                    mpz_t p_1,p_m1,p_mod4,c1_tmp,c2_tmp,q_p_m1_d3,c1_mod;
-                    int c1 = 2, c2 = -1;
-                    
-                    mpz_init(p_1);
-                    mpz_init(p_m1);
-                    mpz_init(p_mod4);
-                    mpz_init(c1_tmp);
-                    mpz_init(c2_tmp);
-                    mpz_init(q_p_m1_d3);
-                    mpz_init(c1_mod);
-                    
-                    mpz_set_ui(c1_tmp,c1);
-                    mpz_set_ui(c2_tmp,c2);
-                    
-                    mpz_sub_ui(p_m1,p_tmp,1);
-                    
-                    mpz_cdiv_r_ui(p_1,p_m1,3);
-                    gmp_printf("\n\nP = %Zd\nr = P-1/3 %Zd\n",p_tmp,p_1);
-                    
-                    mpz_cdiv_q_ui(q_p_m1_d3,p_m1,3);
-                    gmp_printf("q = P-1/3 %Zd\n",q_p_m1_d3);
-                    
-                    mpz_powm(c1_tmp,c1_tmp,q_p_m1_d3,p_tmp);
-                    gmp_printf("2^(P-1)/3 %Zd\n",c1_tmp);
-                    
-                    
-                    int leg = mpz_legendre(c2_tmp,p_tmp);
-                    printf("(-1)^(P-1)/2 = %d\n",leg);
-                    
-                    mpz_mod_ui(p_mod4,p_tmp,4);
-                    gmp_printf("P mod 4 = %Zd\n",p_mod4);
-                    
-                    if ((mpz_cmp_ui(c1_tmp,0) != 0 &&  mpz_cmp_ui(c1_tmp,1) != 0) && (leg == -1 || mpz_cmp_ui(p_m1,leg) == 0))
-                    {
-                        count192p_cond++;
-                        gmp_printf("%Zd\n",X);
-                        gmp_printf("p:%Zd\n",p_tmp);
-                        printf("p = %dbit\n\n\n",(int)mpz_sizeinbase(p_tmp,2));
-                        
-                        if(fp == NULL){
-                            printf("Couldn't open file\n");
-                        }
-                        gmp_fprintf(fp,"%Zd,%ld,%Zd,%d\n",X,mpz_popcount(X),p_tmp,(int)mpz_sizeinbase(p_tmp,2));
-                        if ((int)mpz_sizeinbase(p_tmp,2) == 512)
-                        {
-                            fclose(fp);
-                            break;
-                            
-                        }
-                    }
-                }
-            }
-        }
-        mpz_add_ui(X,X,42);
-    }
-    printf("Total %lld primes generated, where %lld satisfies our condition\n",count192p,count192p_cond);
-    printf(" %d of total generated",(int)(count192p_cond * 100)/(int)count192p);
-    
-    return 0;
+    mpz_clear(prime_m1);
+    mpz_clear(p_m1_d3);
 }
+
+void get_C1omega_C1omegabar(){
+    mpz_t p6_m1,q_p_m1_d9;
+    mpz_init(p6_m1);
+    mpz_init(q_p_m1_d9);
+    
+    mpz_set_ui(c1_omega,C1);
+    
+    mpz_pow_ui(p6_m1,prime,6);
+    //    gmp_printf("p6_m1=%Zd,\n c1_omega=%Zd\n",p6_m1,c1_omega);
+    mpz_sub_ui(p6_m1,p6_m1,1);
+    mpz_mod(p6_m1,p6_m1,prime);
+    mpz_cdiv_q_ui(q_p_m1_d9,p6_m1,9);
+    mpz_powm(c1_omega,c1_omega,q_p_m1_d9,prime);
+    mpz_powm_ui(c1_omega_bar,c1_omega,2,prime);
+    //    gmp_printf("C1_omg=%Zd,\n C1_omg^2=%Zd\n",c1_omega,c1_omega_bar);
+    
+    mpz_clear(p6_m1);
+    mpz_clear(q_p_m1_d9);
+}
+

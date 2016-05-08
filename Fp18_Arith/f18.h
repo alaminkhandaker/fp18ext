@@ -1,5 +1,5 @@
 //
-//  testprime.h
+//  f18.h
 //  Fp18_Arith
 //
 //  Created by Khandaker Md. Al-Amin on 4/29/16.
@@ -16,33 +16,34 @@
 
 //======Fp18 Arith Variables========
 struct Fp{
-	mpz_t x_0;
+    mpz_t x_0;
 };
 struct Fp3{
-	struct Fp a0,a1,a2;
+    struct Fp a0,a1,a2;
 };
 struct Fp6{
-	struct Fp3 a0,a1;
+    struct Fp3 a0,a1;
 };
 struct Fp18{
-	struct Fp6 m0,m1,m2;
+    struct Fp6 m0,m1,m2;
 };
+
 //======ECC Variables========
 struct EFp{
-	struct Fp px,py;
-	int isInfinity;
+    struct Fp px,py;
+    int isInfinity;
 };
 struct EFp3{
-	struct Fp3 p3x,p3y;
-	int isInfinity;
+    struct Fp3 p3x,p3y;
+    int isInfinity;
 };
 struct EFp6{
-	struct Fp6 p6x,p6y;
-	int isInfinity;
+    struct Fp6 p6x,p6y;
+    int isInfinity;
 };
 struct EFp18{
-	struct Fp18 p18x,p18y;
-	int isInfinity;
+    struct Fp18 p18x,p18y;
+    int isInfinity;
 };
 
 #pragma mark  Parameters Variables
@@ -164,6 +165,7 @@ void EFp_ECA(struct EFp *RES, struct EFp *P1, struct EFp *P2);//RES=P1+P2
 int  EFp_cmp(struct EFp *A,struct EFp *B);
 void EFp_random_set(struct EFp *RES);//random set EFp on curve
 
+
 #pragma mark EFp3 methods
 void EFp3_init(struct EFp3 *A);
 void EFp3_set(struct EFp3 *A,struct EFp3 *B);
@@ -178,6 +180,7 @@ void EFp3_random_set(struct EFp3 *RES);
 void EFp3_SCM(struct EFp3 *RES, struct EFp3 *P, mpz_t j);
 void EFp3_neg(struct EFp3 *RES, struct EFp3 *A);
 
+
 #pragma mark EFp6 methods
 void EFp6_init(struct EFp6 *A);
 void EFp6_set(struct EFp6 *A,struct EFp6 *B);
@@ -189,6 +192,7 @@ void EFp6_ECA(struct EFp6 *RES, struct EFp6 *P1, struct EFp6 *P2);//RES=P1+P2
 int  EFp6_cmp(struct EFp6 *A,struct EFp6 *B);
 void EFp6_random_set(struct EFp6 *RES);
 void EFp6_SCM(struct EFp6 *RES, struct EFp6 *P, mpz_t j);
+
 
 #pragma mark EFp18 methods
 void EFp18_init(struct EFp18 *A);
@@ -206,7 +210,6 @@ void EFp18_frobenius_map(struct EFp18 *RES,struct EFp18 *A);
 
 
 #pragma mark Parameters methods
-int getParameters(int bit);
-void EFp_set_EC_parameter(void);
+void generate_parameters(void);
 void get_C1_C1bar();
 void get_C1omega_C1omegabar();
