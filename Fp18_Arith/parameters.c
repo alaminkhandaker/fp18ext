@@ -61,23 +61,23 @@ int parameters(int bit){
     gmp_printf("X = %Zd,HW %ld Bit size %d bit\n",X,mpz_popcount(X),(int)mpz_sizeinbase(X,2));
     
     
-    while ((int)mpz_sizeinbase(X,2) <= 64)
-    {
-        if ((int)mpz_sizeinbase(X,2) == 64)
-        {
-            printf("Got it\n");
-        }
-        mpz_add(X,X2,X);
-    }
-    if ((int)mpz_sizeinbase(X,2) == 64)
-    {
-        printf("Got it\n");
-        return 0;
-    }
-    else
-    {
-        return 0;
-    }
+//    while ((int)mpz_sizeinbase(X,2) <= 64)
+//    {
+//        if ((int)mpz_sizeinbase(X,2) == 64)
+//        {
+//            printf("Got it\n");
+//        }
+//        mpz_add(X,X2,X);
+//    }
+//    if ((int)mpz_sizeinbase(X,2) == 64)
+//    {
+//        printf("Got it\n");
+//        return 0;
+//    }
+//    else
+//    {
+//        return 0;
+//    }
     
     mpz_t p_tmp,r_tmp;
     mpz_t xpow2,xpow3,xpow4,xpow5,xpow6,xpow7,xpow8;

@@ -6,6 +6,7 @@
 #define TRUE 1
 #define FALSE 0
 
+//======Fp18 Arith Variables========
 struct Fp{
 	mpz_t x_0;
 };
@@ -18,27 +19,30 @@ struct Fp6{
 struct Fp18{
 	struct Fp6 m0,m1,m2;
 };
+//======ECC Variables========
 struct EFp{
-	struct Fp x,y;
+	struct Fp px,py;
 	int isInfinity;
 };
 struct EFp3{
-	struct Fp3 x,y;
+	struct Fp3 p3x,p3y;
 	int isInfinity;
 };
 struct EFp6{
-	struct Fp6 x,y;
+	struct Fp6 p6x,p6y;
 	int isInfinity;
 };
 struct EFp18{
-	struct Fp18 x,y;
+	struct Fp18 p18x,p18y;
 	int isInfinity;
 };
 
+#pragma mark  Parameters Variables
 mpz_t X; // variable to find p,r
 mpz_t prime,r_order,t_trace,r_order_EFp,b;
-mpz_t c1_tmp,c1_tmp_bar;
+mpz_t c1_leg,c1_leg_bar,c1_omega,c1_omega_bar;
 
+#pragma mark Fp methods
 void Fp_take_input(struct Fp *RES);
 void Fp_init(struct Fp *A);
 void Fp_set(struct Fp *RES,struct Fp *A);
@@ -60,7 +64,7 @@ void Fp_pow(struct Fp *RES,struct Fp *a,mpz_t b);
 void Fp_sqrt(struct Fp *RES,struct Fp *a);//x^2=a mod p
 int  Fp_cmp_mpz(struct Fp *A,mpz_t B);
 
-//-----------------------------------------------------------------------------------------
+#pragma mark Fp3 methods
 void Fp3_take_input(struct Fp3 *RES);
 void Fp3_init(struct Fp3 *A);
 void Fp3_set(struct Fp3 *RES,struct Fp3 *A);
@@ -73,12 +77,13 @@ void Fp3_add_ui(struct Fp3 *RES,struct Fp3 *A,unsigned long int B);
 void Fp3_sub(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B);
 void Fp3_mul_prev(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B);
 void Fp3_mul(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B);
-void Fp3_mul_omega(struct Fp3 *RES,struct Fp3 *A);//TODO: CHANGE
+void Fp3_mul_omega(struct Fp3 *RES,struct Fp3 *A);
 void Fp3_mul_ui(struct Fp3 *RES,struct Fp3 *A,unsigned long int B);
 void Fp3_mul_Fp(struct Fp3 *RES,struct Fp3 *A,struct Fp *B);
 void Fp3_neg(struct Fp3 *RES,struct Fp3 *A);
 void Fp3_frobenious_conjugate(struct Fp3 *RES,struct Fp3 *A);
 void Fp3_invert(struct Fp3 *RES,struct Fp3 *A);
+void Fp3_invert_prev(struct Fp3 *ANS, struct Fp3 *A);
 void Fp3_div(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B);
 void Fp3_pow(struct Fp3 *RES,struct Fp3 *A,mpz_t B);
 void Fp3_sqrt(struct Fp3 *RES,struct Fp3 *A);//x^2=a mod p
@@ -87,7 +92,7 @@ int  Fp3_cmp(struct Fp3 *A,struct Fp3 *B);
 int  Fp3_cmp_mpz(struct Fp3 *A,mpz_t B);
 void Fp3_neg(struct Fp3 *RES,struct Fp3 *A);
 
-//-----------------------------------------------------------------------------------------
+#pragma mark Fp6 methods
 void Fp6_take_input(struct Fp6 *RES);
 void Fp6_init(struct Fp6 *A);
 void Fp6_set(struct Fp6 *RES,struct Fp6 *A);
@@ -101,10 +106,11 @@ void Fp6_sub(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B);
 void Fp6_mul_prev(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B);
 void Fp6_mul(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B);
 void Fp6_mul_tau(struct Fp6 *RES,struct Fp6 *A);
+void Fp6_mul_omega(struct Fp6 *RES,struct Fp6 *A);
 void Fp6_mul_ui(struct Fp6 *RES,struct Fp6 *A,unsigned long int B);
-void Fp6_mul_Fp(struct Fp6 *RES,struct Fp6 *A,struct Fp *B);
-void Fp6_neg(struct Fp6 *RES,struct Fp6 *A);
+void Fp6_mul_Fp(struct Fp6 *RES,struct Fp6 *A,struct Fp *B);//TODO
 void Fp6_invert(struct Fp6 *RES,struct Fp6 *A);
+void Fp6_invert_prev(struct Fp6 *ANS, struct Fp6 *A);
 void Fp6_div(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B);
 void Fp6_pow(struct Fp6 *RES,struct Fp6 *A,mpz_t B);
 void Fp6_sqrt(struct Fp6 *RES,struct Fp6 *A);//x^2=a mod p
@@ -113,7 +119,7 @@ int  Fp6_cmp(struct Fp6 *A,struct Fp6 *B);
 int  Fp6_cmp_mpz(struct Fp6 *A,mpz_t B);
 void Fp6_neg(struct Fp6 *RES,struct Fp6 *A);
 
-//-----------------------------------------------------------------------------------------
+#pragma mark Fp18 methods
 void Fp18_take_input(struct Fp18 *RES);
 void Fp18_init(struct Fp18 *A);
 void Fp18_set(struct Fp18 *RES,struct Fp18 *A);
@@ -126,8 +132,9 @@ void Fp18_add_ui(struct Fp18 *RES,struct Fp18 *A,unsigned long int B);
 void Fp18_sub(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B);
 void Fp18_mul(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B);
 void Fp18_mul_ui(struct Fp18 *RES,struct Fp18 *A,unsigned long int B);
-void Fp18_mul_Fp(struct Fp18 *RES,struct Fp18 *A,struct Fp *B);
+void Fp18_mul_Fp(struct Fp18 *RES,struct Fp18 *A,struct Fp *B);//TODO: not required
 void Fp18_neg(struct Fp18 *RES,struct Fp18 *A);
+void Fp18_invert_prev(struct Fp18 *RES, struct Fp18 *A);
 void Fp18_invert(struct Fp18 *RES,struct Fp18 *A);
 void Fp18_div(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B);
 void Fp18_pow(struct Fp18 *RES,struct Fp18 *A,mpz_t B);
@@ -135,10 +142,9 @@ void Fp18_sqrt(struct Fp18 *RES,struct Fp18 *A);//x^2=a mod p
 int  Fp18_legendre(struct Fp18 *A);
 int  Fp18_cmp(struct Fp18 *A,struct Fp18 *B);
 int  Fp18_cmp_mpz(struct Fp18 *A,mpz_t B);
-void Fp18_neg(struct Fp18 *RES,struct Fp18 *A);
 
-//-----------------------------------------------------------------------------------------
 
+#pragma mark EFp methods
 void EFp_init(struct EFp *A);
 void EFp_set(struct EFp *A,struct EFp *B);
 void EFp_set_infity(struct EFp *A);
@@ -150,7 +156,7 @@ void EFp_ECA(struct EFp *RES, struct EFp *P1, struct EFp *P2);//RES=P1+P2
 int  EFp_cmp(struct EFp *A,struct EFp *B);
 void EFp_random_set(struct EFp *RES);//random set EFp on curve
 
-//-----------------------------------------------------------------------------------------
+#pragma mark EFp3 methods
 void EFp3_init(struct EFp3 *A);
 void EFp3_set(struct EFp3 *A,struct EFp3 *B);
 void EFp3_set_infity(struct EFp3 *A);
@@ -164,7 +170,7 @@ void EFp3_random_set(struct EFp3 *RES);
 void EFp3_SCM(struct EFp3 *RES, struct EFp3 *P, mpz_t j);
 void EFp3_neg(struct EFp3 *RES, struct EFp3 *A);
 
-//-----------------------------------------------------------------------------------------
+#pragma mark EFp6 methods
 void EFp6_init(struct EFp6 *A);
 void EFp6_set(struct EFp6 *A,struct EFp6 *B);
 void EFp6_set_infity(struct EFp6 *A);
@@ -176,7 +182,7 @@ int  EFp6_cmp(struct EFp6 *A,struct EFp6 *B);
 void EFp6_random_set(struct EFp6 *RES);
 void EFp6_SCM(struct EFp6 *RES, struct EFp6 *P, mpz_t j);
 
-//-----------------------------------------------------------------------------------------
+#pragma mark EFp18 methods
 void EFp18_init(struct EFp18 *A);
 void EFp18_set(struct EFp18 *A,struct EFp18 *B);
 void EFp18_set_infity(struct EFp18 *A);
@@ -190,8 +196,9 @@ void EFp18_random_set_for_Ate(struct EFp18 *RES);
 void EFp18_SCM(struct EFp18 *RES, struct EFp18 *P, mpz_t j);
 void EFp18_frobenius_map(struct EFp18 *RES,struct EFp18 *A);
 
-//-----------------------------------------------------------------------------------------
 
+#pragma mark Parameters methods
 int getParameters(int bit);
 void EFp_set_EC_parameter(void);
 void get_C1_C1bar();
+void get_C1omega_C1omegabar();

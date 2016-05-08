@@ -22,36 +22,21 @@ int main(void)
 
     
     mpz_init(prime);
-//mpz_set_str(prime,"7",10);
-    mpz_set_str(prime,"638508488753389092195439720208817843316062995515124574544010783086949264599518591426924070465759719017041310253064889352571109595156203400346010025740431",10);
+//  mpz_set_str(prime,"7",10);
+mpz_set_str(prime,"638508488753389092195439720208817843316062995515124574544010783086949264599518591426924070465759719017041310253064889352571109595156203400346010025740431",10);
     mpz_init(r_order);
     mpz_init(r_order_EFp);
     mpz_init(t_trace);
     mpz_init(b);
-    mpz_init(c1_tmp);
-    mpz_init(c1_tmp_bar);
+    mpz_init(c1_leg);
+    mpz_init(c1_leg_bar);
+    mpz_init(c1_omega);
+    mpz_init(c1_omega_bar);
     
 //    get_C1_C1bar();
-    
-//    struct Fp6 P,RES,RES1,Q;
-//    Fp6_init(&P);
-//    Fp6_init(&Q);
-//    Fp6_init(&RES);
-//    Fp6_init(&RES1);
-//    Fp6_take_input(&P);
-//    Fp6_take_input(&Q);
-//    
-//    Fp6_mul(&RES, &P, &Q);
-////    Fp3_neg(&RES, &P);
-//    printf("new\n");
-//    Fp6_printf(&RES);
-//    Fp6_mul_prev(&RES1, &P,&Q);
-//    printf("prev\n");
-//    Fp6_printf(&RES1);
-    
+//    get_C1omega_C1omegabar();
     
     EFp_set_EC_parameter();
-    // mpz_set_str(p,"11",10);
     gmp_printf("p=%Zd\n",prime);
     gmp_printf("r=%Zd\n",r_order);
     gmp_printf("t=%Zd\n",t_trace);
@@ -60,8 +45,50 @@ int main(void)
     printf("p = %d bit\n",(int)mpz_sizeinbase(prime,2));
     printf("r = %d bit\n",(int)mpz_sizeinbase(r_order,2));
     printf("t = %d bit\n",(int)mpz_sizeinbase(t_trace,2));
-    
     gmp_printf("y^2=x^3+%Zd\n",b);
+    
+//    struct Fp3 P,RES,RES1,Q;
+//    Fp3_init(&P);
+//    Fp3_init(&Q);
+//    Fp3_init(&RES);
+//    Fp3_init(&RES1);
+//    Fp3_take_input(&P);
+//    Fp3_invert(&RES, &P);
+//    printf("new\n");
+//    Fp3_printf(&RES);
+//    Fp3_invert_prev(&RES1, &P);
+//    printf("prev\n");
+//    Fp3_printf(&RES1);
+    
+//    struct Fp6 P,RES,RES1,Q;
+//    Fp6_init(&P);
+//    Fp6_init(&Q);
+//    Fp6_init(&RES);
+//    Fp6_init(&RES1);
+//    Fp6_take_input(&P);
+//    Fp6_invert(&RES, &P);
+//    printf("new\n");
+//    Fp6_printf(&RES);
+//    Fp6_invert_prev(&RES1, &P);
+//    printf("prev\n");
+//    Fp6_printf(&RES1);
+    
+//    struct Fp18 P,RES,RES1,Q;
+//    Fp18_init(&P);
+//    Fp18_init(&Q);
+//    Fp18_init(&RES);
+//    Fp18_init(&RES1);
+//    Fp18_take_input(&P);
+////    Fp18_take_input(&Q);
+////    Fp18_mul(&RES, &P, &Q);
+//    Fp18_invert(&RES, &P);
+//    printf("new\n");
+//    Fp18_printf(&RES);
+//    Fp18_invert_prev(&RES1, &P);
+//    printf("prev\n");
+//    Fp18_printf(&RES1);
+    
+
     
 
 //     struct EFp18 P,Q;
@@ -79,12 +106,12 @@ int main(void)
     mpz_clear(prime);
     mpz_clear(r_order);
     mpz_clear(b);
-    mpz_clear(c1_tmp);
-    mpz_clear(c1_tmp_bar);
+    mpz_clear(c1_leg);
+    mpz_clear(c1_leg_bar);
     return 0;
 }
 
-
+#pragma mark Input from Terminals methods
 void Fp_take_input(struct Fp *RES)
 {
     struct Fp tmp;
@@ -142,9 +169,7 @@ void Fp18_take_input(struct Fp18 *RES)
     Fp18_clear(&tmp);
 }
 
-
-//-----------------------------------------------------------------------------------------
-
+#pragma mark Fp method implementations
 void Fp_init(struct Fp *A){
     mpz_init(A->x_0);
 }
@@ -310,7 +335,6 @@ void Fp_pow(struct Fp *RES,struct Fp *A,mpz_t B){//RES = A^B
     Fp_clear(&dumy);
 }
 
-
 void Fp_sqrt(struct Fp *RES,struct Fp *A){
     struct Fp n_tmp,y_tmp,x_tmp,b_tmp,t_tmp,tmp_Fp;
     Fp_init(&n_tmp);
@@ -414,7 +438,7 @@ int Fp_cmp_mpz(struct Fp *A,mpz_t B){
     return 1;
 }
 
-//-----------------------------------------------------------------------------------------
+#pragma mark ==Fp3== method implementations
 
 void Fp3_init(struct Fp3 *A){
     Fp_init(&A->a0);
@@ -634,7 +658,6 @@ void Fp3_mul_omega(struct Fp3 *RES,struct Fp3 *A){
     Fp3_init(&tmp);
     
     Fp_mul_c1(&tmp.a0,&A->a2);//omega^3=C1
-//    Fp_mul_ui(&tmp.a0,&A->a2,C1);//omega^3=C1
     Fp_set(&tmp.a1,&A->a0);
     Fp_set(&tmp.a2,&A->a1);
     
@@ -666,20 +689,43 @@ void Fp3_mul_Fp(struct Fp3 *RES,struct Fp3 *A,struct Fp *B){
 }
 
 void get_C1_C1bar(){
-    mpz_t prime_s1,q_p_m1_d3;
-    mpz_init(prime_s1);
-    mpz_init(q_p_m1_d3);
+    mpz_t prime_m1,p_m1_d3;
+    mpz_init(prime_m1);
+    mpz_init(p_m1_d3);
+
+    mpz_set_ui(c1_leg,C1);
     
-    mpz_set_ui(c1_tmp,C1);
+    mpz_sub_ui(prime_m1,prime,1);
+    mpz_cdiv_q_ui(p_m1_d3,prime_m1,3);
+    mpz_powm(c1_leg,c1_leg,p_m1_d3,prime);
+    mpz_powm_ui(c1_leg_bar,c1_leg,2,prime);
     
-    mpz_sub_ui(prime_s1,prime,1);
-    mpz_cdiv_q_ui(q_p_m1_d3,prime_s1,3);
-    mpz_powm(c1_tmp,c1_tmp,q_p_m1_d3,prime);
-    mpz_powm_ui(c1_tmp_bar,c1_tmp,2,prime);
+//    gmp_printf("C1=%Zd,\n C1^2=%Zd\n",c1_leg,c1_leg_bar);
     
-    mpz_clear(prime_s1);
-    mpz_clear(q_p_m1_d3);
+    mpz_clear(prime_m1);
+    mpz_clear(p_m1_d3);
 }
+
+void get_C1omega_C1omegabar(){
+    mpz_t p6_m1,q_p_m1_d9;
+    mpz_init(p6_m1);
+    mpz_init(q_p_m1_d9);
+    
+    mpz_set_ui(c1_omega,C1);
+    
+    mpz_pow_ui(p6_m1,prime,6);
+//    gmp_printf("p6_m1=%Zd,\n c1_omega=%Zd\n",p6_m1,c1_omega);
+    mpz_sub_ui(p6_m1,p6_m1,1);
+    mpz_mod(p6_m1,p6_m1,prime);
+    mpz_cdiv_q_ui(q_p_m1_d9,p6_m1,9);
+    mpz_powm(c1_omega,c1_omega,q_p_m1_d9,prime);
+    mpz_powm_ui(c1_omega_bar,c1_omega,2,prime);
+//    gmp_printf("C1_omg=%Zd,\n C1_omg^2=%Zd\n",c1_omega,c1_omega_bar);
+    
+    mpz_clear(p6_m1);
+    mpz_clear(q_p_m1_d9);
+}
+
 
 //a^−1 = n(a)^−1(a^q*a^q^2 ),
 void Fp3_frobenious_conjugate(struct Fp3 *RES,struct Fp3 *A){
@@ -689,10 +735,10 @@ void Fp3_frobenious_conjugate(struct Fp3 *RES,struct Fp3 *A){
     struct Fp tmp_c1;
     Fp_init(&tmp_c1);
     
-    mpz_set(tmp_c1.x_0,c1_tmp);
+    mpz_set(tmp_c1.x_0,c1_leg);
     Fp_set(&t_RES.a0,&A->a0);
     Fp_mul(&t_RES.a1,&A->a1,&tmp_c1);
-    Fp_set_mpz(&tmp_c1, c1_tmp_bar);
+    Fp_set_mpz(&tmp_c1, c1_leg_bar);
     Fp_mul(&t_RES.a2,&A->a2,&tmp_c1);
     
     Fp3_set(RES,&t_RES);
@@ -742,6 +788,58 @@ void Fp3_invert(struct Fp3 *RES, struct Fp3 *A){
     Fp_clear(&T0);
     Fp_clear(&norm);
 }
+void Fp3_invert_prev(struct Fp3 *ANS, struct Fp3 *A){
+    struct Fp3 t_ans;
+    Fp3_init(&t_ans);
+    
+    struct Fp T0,T1,t0,t1,t2,t3;
+    Fp_init(&T0);
+    Fp_init(&T1);
+    Fp_init(&t0);
+    Fp_init(&t1);
+    Fp_init(&t2);
+    Fp_init(&t3);
+    
+    // An optimized version of Grewal's Algo. 3   (a,b,c)
+    Fp_mul(&T0,&A->a0,&A->a0);
+    Fp_mul_ui(&t0,&A->a1,C1);
+    
+    Fp_mul(&T1,&t0,&A->a2);
+    Fp_sub(&t1,&T0,&T1); // t1=(a^2-bci) mod q
+    
+    Fp_mul(&T0,&A->a2,&A->a2);
+    Fp_mul_ui(&T0,&T0,C1);
+    Fp_mul(&T1,&A->a0,&A->a1);
+    Fp_sub(&t2,&T0,&T1); // t2=(c^2i-ab) mod q
+    
+    Fp_mul(&T0,&A->a1,&A->a1);
+    Fp_mul(&T1,&A->a0,&A->a2);
+    Fp_sub(&t3,&T0,&T1); // t3=(b^2-ac) mod q
+    
+    Fp_mul(&T0,&t0,&t3);
+    Fp_mul(&T1,&A->a0,&t1);
+    Fp_add(&T0,&T0,&T1); // T0={bi(b^2-ac)+a(a^2-bci)} mod q
+    
+    Fp_mul_ui(&t0,&A->a2,C1);
+    Fp_mul(&T1,&t0,&t2);
+    Fp_add(&t0,&T0,&T1); // t0={ci(c^2i-ab)+{bi(b^2-ac)+a(a^2-bci)}} mod q .0
+    
+    mpz_invert(t0.x_0,t0.x_0,prime);
+    
+    Fp_mul(&t_ans.a0,&t1,&t0);
+    Fp_mul(&t_ans.a1,&t2,&t0);
+    Fp_mul(&t_ans.a2,&t3,&t0);
+    
+    Fp3_set(ANS,&t_ans);
+    
+    Fp3_clear(&t_ans);
+    Fp_clear(&T0);
+    Fp_clear(&T1);
+    Fp_clear(&t0);
+    Fp_clear(&t1);
+    Fp_clear(&t2);
+    Fp_clear(&t3);
+}
 void Fp3_div(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
     struct Fp3 tmp,t_RES;
     Fp3_init(&tmp);
@@ -759,11 +857,11 @@ void Fp3_pow(struct Fp3 *RES,struct Fp3 *A,mpz_t B){
     int i;
     int r;//bit数
     r= (int)mpz_sizeinbase(B,2);
-    //printf("r= %d\n",r);
+//    printf("r= %d\n",r);
     
-    struct Fp3 RESwer_tmp;
-    Fp3_init(&RESwer_tmp);
-    Fp3_set(&RESwer_tmp,A);
+    struct Fp3 res_tmp;
+    Fp3_init(&res_tmp);
+    Fp3_set(&res_tmp,A);
     
     struct Fp3 in_tmp;
     Fp3_init(&in_tmp);
@@ -771,16 +869,16 @@ void Fp3_pow(struct Fp3 *RES,struct Fp3 *A,mpz_t B){
     
     for(i=r-2;i>=0;i--){
         if(mpz_tstbit(B,i)==1){
-            Fp3_mul(&RESwer_tmp,&RESwer_tmp,&RESwer_tmp);//a*2
-            Fp3_mul(&RESwer_tmp,&RESwer_tmp,&in_tmp);//*a
+            Fp3_mul(&res_tmp,&res_tmp,&res_tmp);//a*2
+            Fp3_mul(&res_tmp,&res_tmp,&in_tmp);//*a
         }else{
-            Fp3_mul(&RESwer_tmp,&RESwer_tmp,&RESwer_tmp);//a*2
+            Fp3_mul(&res_tmp,&res_tmp,&res_tmp);//a*2
         }
     }
     
-    Fp3_set(RES,&RESwer_tmp);
+    Fp3_set(RES,&res_tmp);
     
-    Fp3_clear(&RESwer_tmp);
+    Fp3_clear(&res_tmp);
     Fp3_clear(&in_tmp);
 }
 void Fp3_sqrt(struct Fp3 *RES,struct Fp3 *A){
@@ -903,8 +1001,7 @@ void Fp3_neg(struct Fp3 *RES,struct Fp3 *a){
     Fp3_clear(&tmp);
 }
 
-//-----------------------------------------------------------------------------------------
-
+#pragma mark ==Fp6== method implementations
 void Fp6_init(struct Fp6 *A){
     Fp3_init(&A->a0);
     Fp3_init(&A->a1);
@@ -1044,6 +1141,16 @@ void Fp6_mul_tau(struct Fp6 *RES,struct Fp6 *A){
     Fp6_set(RES,&tmp);
     Fp6_clear(&tmp);
 }
+void Fp6_mul_omega(struct Fp6 *RES,struct Fp6 *A){
+    struct Fp6 tmp;
+    Fp6_init(&tmp);
+    
+    Fp3_mul_omega(&tmp.a0,&A->a0);
+    Fp3_mul_omega(&tmp.a1,&A->a1);
+    
+    Fp6_set(RES,&tmp);
+    Fp6_clear(&tmp);
+}
 void Fp6_mul_ui(struct Fp6 *RES,struct Fp6 *A,unsigned long int B){
     struct Fp6 tmp;
     Fp6_init(&tmp);
@@ -1062,14 +1169,43 @@ void Fp6_mul_Fp(struct Fp6 *RES,struct Fp6 *A,struct Fp *B){
     Fp3_mul_Fp(&tmp.a1,&A->a1,B);
     
     Fp6_set(RES,&tmp);
-    
     Fp6_clear(&tmp);
 }
 void Fp6_invert(struct Fp6 *RES, struct Fp6 *A){
     struct Fp6 tmp;
     Fp6_init(&tmp);
+
+    //(m^q^3 )= a0−a1τ
+    Fp3_set(&tmp.a0,&A->a0);
+    Fp3_neg(&tmp.a1,&A->a1);
     
-    // tmp=A^(q^6)=(a0,-a1)
+    struct Fp3 norm,a,b;
+    Fp3_init(&norm);
+    Fp3_init(&a);
+    Fp3_init(&b);
+   
+    //n(m)=a0^2+a1^2
+    Fp3_mul(&a,&A->a0,&A->a0); // a=a0^2
+    Fp3_mul(&b,&A->a1,&A->a1); // b=a1^2
+    Fp3_add(&norm,&a,&b);
+    Fp3_invert(&norm,&norm);
+    
+    //m^−1 = n(m)^−1(m^q^3 )
+    Fp3_mul(&tmp.a0,&tmp.a0,&norm);
+    Fp3_mul(&tmp.a1,&tmp.a1,&norm);
+    
+    Fp6_set(RES,&tmp);
+    
+    Fp3_clear(&norm);
+    Fp3_clear(&a);
+    Fp3_clear(&b);
+    Fp6_clear(&tmp);
+}
+void Fp6_invert_prev(struct Fp6 *ANS, struct Fp6 *A){
+    struct Fp6 tmp;
+    Fp6_init(&tmp);
+    
+    // tmp=A^(q^6)=(x0,-x1)
     Fp3_set(&tmp.a0,&A->a0);
     Fp3_neg(&tmp.a1,&A->a1);
     
@@ -1078,18 +1214,18 @@ void Fp6_invert(struct Fp6 *RES, struct Fp6 *A){
     Fp3_init(&a);
     Fp3_init(&b);
     
-    Fp3_mul(&a,&A->a0,&A->a0); // a=a0^2
-    Fp3_mul(&b,&A->a1,&A->a1); // b=a1^2
-    Fp3_mul_omega(&b,&b); // b=a1^2*v
-    Fp3_sub(&c,&a,&b); // c=a0^2-a1^2*v mod q
+    Fp3_mul(&a,&A->a0,&A->a0); // a=x0^2
+    Fp3_mul(&b,&A->a1,&A->a1); // b=x1^2
+    Fp3_mul_omega(&b,&b); // b=x1^2*v
+    Fp3_sub(&c,&a,&b); // c=x0^2-x1^2*v mod q
     
     Fp3_invert(&c,&c);
     
-    // RES=A^{-1}=(c)^{-1}*A^(p^6) A which c is Fp6-element and tmp is a vector A Fp6
+    // ANS=A^{-1}=(c)^{-1}*A^(p^6) A which c is Fp6-element and tmp is a vector A Fp6
     Fp3_mul(&tmp.a0,&tmp.a0,&c);
     Fp3_mul(&tmp.a1,&tmp.a1,&c);
     
-    Fp6_set(RES,&tmp);
+    Fp6_set(ANS,&tmp);
     
     Fp3_clear(&c);
     Fp3_clear(&a);
@@ -1253,7 +1389,8 @@ void Fp6_neg(struct Fp6 *RES,struct Fp6 *a){
     Fp6_clear(&tmp);
 }
 
-//-----------------------------------------------------------------------------------------
+
+#pragma mark ==Fp18== method implementations
 
 void Fp18_init(struct Fp18 *A){
     Fp6_init(&A->m0);
@@ -1294,7 +1431,6 @@ void Fp18_add(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B){
     Fp6_add(&tmp.m2,&A->m2,&B->m2);
     
     Fp18_set(RES,&tmp);
-    
     Fp18_clear(&tmp);
 }
 void Fp18_add_ui(struct Fp18 *RES,struct Fp18 *A,unsigned long int B){
@@ -1306,7 +1442,6 @@ void Fp18_add_ui(struct Fp18 *RES,struct Fp18 *A,unsigned long int B){
     Fp6_add_ui(&tmp.m2,&A->m2,B);
     
     Fp18_set(RES,&tmp);
-    
     Fp18_clear(&tmp);
 }
 void Fp18_sub(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B){
@@ -1318,71 +1453,69 @@ void Fp18_sub(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B){
     Fp6_sub(&tmp.m2,&A->m2,&B->m2);
     
     Fp18_set(RES,&tmp);
-    
     Fp18_clear(&tmp);
 }
 void Fp18_mul(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B){
-    //(a0,a1,a2)*(b0,b1,b2)=(x0y0+xi((a1+a2)(b1+b2)-a1b1-x2y2),xix2y2+(a0+a1)(b0+b1)-x0y0-a1b1,a1b1+(a0+a2)(b0+b2)-x0y0-x2y2)
-    struct Fp6 tmp00,tmp11,tmp22,tmpx01,tmpx12,tmpx20,tmpy01,tmpy12,tmpy20,t0,t1,t2,tmp;
+    struct Fp6 A0,A1,A2,tmp_A01,tmp_A12,tmp_A20,tmp_B01,tmp_B12,tmp_B20,A3,A5,A4,tmp;
     struct Fp18 t_RES;
-    Fp6_init(&tmp00);
-    Fp6_init(&tmp11);
-    Fp6_init(&tmp22);
-    Fp6_init(&tmpx01);
-    Fp6_init(&tmpx12);
-    Fp6_init(&tmpx20);
-    Fp6_init(&tmpy01);
-    Fp6_init(&tmpy12);
-    Fp6_init(&tmpy20);
-    Fp6_init(&t0);
-    Fp6_init(&t1);
-    Fp6_init(&t2);
+    Fp6_init(&A0);
+    Fp6_init(&A1);
+    Fp6_init(&A2);
+    Fp6_init(&tmp_A01);
+    Fp6_init(&tmp_A12);
+    Fp6_init(&tmp_A20);
+    Fp6_init(&tmp_B01);
+    Fp6_init(&tmp_B12);
+    Fp6_init(&tmp_B20);
+    Fp6_init(&A3);
+    Fp6_init(&A5);
+    Fp6_init(&A4);
     Fp6_init(&tmp);
     Fp18_init(&t_RES);
     
-    Fp6_mul(&tmp00,&A->m0,&B->m0);//a0*b0
-    Fp6_mul(&tmp11,&A->m1,&B->m1);//a1*b1
-    Fp6_mul(&tmp22,&A->m2,&B->m2);//a2*b2
+    Fp6_mul(&A0,&A->m0,&B->m0);//a0*b0
+    Fp6_mul(&A1,&A->m1,&B->m1);//a1*b1
+    Fp6_mul(&A2,&A->m2,&B->m2);//a2*b2
     
-    Fp6_add(&tmpx01,&A->m0,&A->m1);//a0+a1
-    Fp6_add(&tmpx12,&A->m1,&A->m2);//a1+a2
-    Fp6_add(&tmpx20,&A->m0,&A->m2);//a2+a0
-    Fp6_add(&tmpy01,&B->m0,&B->m1);//b0+b1
-    Fp6_add(&tmpy12,&B->m1,&B->m2);//b1+b2
-    Fp6_add(&tmpy20,&B->m0,&B->m2);//b2+b0
+    Fp6_add(&tmp_A01,&A->m0,&A->m1);//a0+a1
+    Fp6_add(&tmp_A12,&A->m1,&A->m2);//a1+a2
+    Fp6_add(&tmp_A20,&A->m0,&A->m2);//a2+a0
+    Fp6_add(&tmp_B01,&B->m0,&B->m1);//b0+b1
+    Fp6_add(&tmp_B12,&B->m1,&B->m2);//b1+b2
+    Fp6_add(&tmp_B20,&B->m0,&B->m2);//b2+b0
     
-    Fp6_mul(&t0,&tmpx01,&tmpy01);//(a0+a1)(b0+b1)
-    Fp6_mul(&t1,&tmpx12,&tmpy12);//(a1+a2)(b1+b2)
-    Fp6_mul(&t2,&tmpx20,&tmpy20);//(a2+a0)(b2+b0)
+    Fp6_mul(&A3,&tmp_A01,&tmp_B01);//(a0+a1)(b0+b1)
+    Fp6_mul(&A4,&tmp_A20,&tmp_B20);//(a2+a0)(b2+b0)
+    Fp6_mul(&A5,&tmp_A12,&tmp_B12);//(a1+a2)(b1+b2)
     
-    Fp6_sub(&t1,&t1,&tmp11);
-    Fp6_sub(&t1,&t1,&tmp22);//(a1+a2)(b1+b2)-a1b1-x2y2
-    Fp6_mul_tau(&tmp,&t1);//TODO
-    Fp6_add(&t_RES.m0,&tmp00,&tmp);
+    Fp6_sub(&A5,&A5,&A1);
+    Fp6_sub(&A5,&A5,&A2);
+    Fp6_mul_omega(&tmp,&A5);//wt3
+    Fp6_add(&t_RES.m0,&A0,&tmp);
     
-    Fp6_sub(&t0,&t0,&tmp00);
-    Fp6_sub(&t0,&t0,&tmp11);
-    Fp6_mul_tau(&tmp,&tmp22);
-    Fp6_add(&t_RES.m1,&tmp,&t0);
+    Fp6_sub(&A3,&A3,&A0);
+    Fp6_sub(&A3,&A3,&A1);//t1
+    Fp6_mul_omega(&tmp,&A2);
+    Fp6_add(&t_RES.m1,&tmp,&A3);
     
-    Fp6_sub(&t2,&t2,&tmp00);
-    Fp6_sub(&t2,&t2,&tmp22);
-    Fp6_add(&t_RES.m2,&tmp11,&t2);
+    Fp6_sub(&A4,&A4,&A0);
+    Fp6_sub(&A4,&A4,&A2);
+    Fp6_add(&t_RES.m2,&A1,&A4);
     
     Fp18_set(RES,&t_RES);
     
-    Fp6_clear(&tmp00);
-    Fp6_clear(&tmp11);
-    Fp6_clear(&tmp22);
-    Fp6_clear(&tmpx01);
-    Fp6_clear(&tmpx12);
-    Fp6_clear(&tmpx20);
-    Fp6_clear(&tmpy01);
-    Fp6_clear(&tmpy12);
-    Fp6_clear(&tmpy20);
-    Fp6_clear(&t0);
-    Fp6_clear(&t1);
-    Fp6_clear(&t2);
+    Fp6_clear(&A0);
+    Fp6_clear(&A1);
+    Fp6_clear(&A2);
+    Fp6_clear(&tmp_A01);
+    Fp6_clear(&tmp_A12);
+    Fp6_clear(&tmp_A20);
+    Fp6_clear(&tmp_B01);
+    Fp6_clear(&tmp_B12);
+    Fp6_clear(&tmp_B20);
+    Fp6_clear(&A3);
+    Fp6_clear(&A5);
+    Fp6_clear(&A4);
     Fp6_clear(&tmp);
 }
 void Fp18_mul_ui(struct Fp18 *RES,struct Fp18 *A,unsigned long int B){
@@ -1405,10 +1538,9 @@ void Fp18_mul_Fp(struct Fp18 *RES,struct Fp18 *A,struct Fp *B){
     Fp6_mul_Fp(&tmp.m2,&A->m2,B);
     
     Fp18_set(RES,&tmp);
-    
     Fp18_clear(&tmp);
 }
-void Fp18_invert(struct Fp18 *RES, struct Fp18 *A){
+void Fp18_invert_prev(struct Fp18 *RES, struct Fp18 *A){
     struct Fp18 t_RES;
     Fp18_init(&t_RES);
     
@@ -1460,6 +1592,73 @@ void Fp18_invert(struct Fp18 *RES, struct Fp18 *A){
     Fp6_clear(&t2);
     Fp6_clear(&t3);
 }
+void Fp18_frobenious_conjugate(struct Fp18 *RES,struct Fp18 *A){
+    //a^−1 = n(a)^−1(a^q*a^q^2 )
+    struct Fp18 t_RES;
+    Fp18_init(&t_RES);
+    
+    struct Fp tmp;
+    Fp_init(&tmp);
+    Fp_set_mpz(&tmp, c1_omega);
+    
+    
+    Fp6_set(&t_RES.m0, &A->m0);
+    Fp6_mul_Fp(&t_RES.m1, &A->m1, &tmp);
+    Fp_set_mpz(&tmp, c1_omega_bar);
+    Fp6_mul_Fp(&t_RES.m2, &A->m2, &tmp);
+    
+    
+    Fp18_set(RES,&t_RES);
+    Fp18_clear(&t_RES);
+    Fp_clear(&tmp);
+}
+void Fp18_invert(struct Fp18 *RES, struct Fp18 *A){
+    struct Fp18 t_RES,Aq,Aqsq,t_Aq,AqAqsq,t_norm;
+    Fp18_init(&t_RES);
+    Fp18_init(&Aq);
+    Fp18_init(&Aqsq);
+    Fp18_init(&t_Aq);
+    Fp18_init(&AqAqsq);
+    Fp18_init(&t_norm);
+    
+    Fp18_frobenious_conjugate(&Aq, A);
+    Fp18_set(&t_Aq, &Aq);
+    Fp18_frobenious_conjugate(&Aqsq,&t_Aq);
+    Fp18_mul(&AqAqsq, &Aq, &Aqsq);
+    Fp18_mul(&t_norm, &AqAqsq, A);
+    
+    Fp18_printf(&t_norm);
+    
+    struct Fp6 norm,T0;
+    Fp6_init(&norm);
+    Fp6_init(&T0);
+    mpz_t zero;
+    mpz_init(zero);
+    mpz_set_ui(zero, 0);
+    
+    if (Fp6_cmp_mpz(&t_norm.m1, zero)!= 0 || Fp6_cmp_mpz(&t_norm.m2, zero)!= 0)
+    {
+        printf("Fp18 Norm func calculation goes wrong\n");
+        exit(0);
+    }
+
+    Fp6_set(&T0, &t_norm.m0);
+    Fp6_invert(&norm, &T0);
+    Fp6_mul(&t_RES.m0, &AqAqsq.m0, &norm);
+    Fp6_mul(&t_RES.m1, &AqAqsq.m1, &norm);
+    Fp6_mul(&t_RES.m2, &AqAqsq.m2, &norm);
+    
+    Fp18_set(RES,&t_RES);
+    
+    Fp18_clear(&t_RES);
+    Fp18_clear(&Aq);
+    Fp18_clear(&Aqsq);
+    Fp18_clear(&AqAqsq);
+    Fp18_clear(&t_norm);
+    Fp6_clear(&T0);
+    Fp6_clear(&norm);
+}
+
 void Fp18_div(struct Fp18 *RES,struct Fp18 *A,struct Fp18 *B){
     struct Fp18 tmp,t_RES;
     Fp18_init(&tmp);
@@ -1479,9 +1678,9 @@ void Fp18_pow(struct Fp18 *RES,struct Fp18 *A,mpz_t B){
     r= (int)mpz_sizeinbase(B,2);
     //printf("r= %d\n",r);
     
-    struct Fp18 RESwer_tmp;
-    Fp18_init(&RESwer_tmp);
-    Fp18_set(&RESwer_tmp,A);
+    struct Fp18 res_tmp;
+    Fp18_init(&res_tmp);
+    Fp18_set(&res_tmp,A);
     
     struct Fp18 in_tmp;
     Fp18_init(&in_tmp);
@@ -1489,16 +1688,16 @@ void Fp18_pow(struct Fp18 *RES,struct Fp18 *A,mpz_t B){
     
     for(i=r-2;i>=0;i--){
         if(mpz_tstbit(B,i)==1){
-            Fp18_mul(&RESwer_tmp,&RESwer_tmp,&RESwer_tmp);//a*2
-            Fp18_mul(&RESwer_tmp,&RESwer_tmp,&in_tmp);//*a
+            Fp18_mul(&res_tmp,&res_tmp,&res_tmp);//a*2
+            Fp18_mul(&res_tmp,&res_tmp,&in_tmp);//*a
         }else{
-            Fp18_mul(&RESwer_tmp,&RESwer_tmp,&RESwer_tmp);//a*2
+            Fp18_mul(&res_tmp,&res_tmp,&res_tmp);//a*2
         }
     }
     
-    Fp18_set(RES,&RESwer_tmp);
+    Fp18_set(RES,&res_tmp);
     
-    Fp18_clear(&RESwer_tmp);
+    Fp18_clear(&res_tmp);
     Fp18_clear(&in_tmp);
 }
 void Fp18_sqrt(struct Fp18 *RES,struct Fp18 *A){
@@ -1624,29 +1823,29 @@ void Fp18_neg(struct Fp18 *RES,struct Fp18 *a){
     Fp18_clear(&tmp);
 }
 
-//-----------------------------------------------------------------------------------------
+#pragma mark **EFp** method implementations
 
 void EFp_init(struct EFp *A){
-    Fp_init(&A->x);
-    Fp_init(&A->y);
+    Fp_init(&A->px);
+    Fp_init(&A->py);
     A->isInfinity=FALSE;
 }
 void EFp_set(struct EFp *A,struct EFp *B){
-    Fp_set(&A->x,&B->x);
-    Fp_set(&A->y,&B->y);
+    Fp_set(&A->px,&B->px);
+    Fp_set(&A->py,&B->py);
     A->isInfinity=B->isInfinity;
 }
 void EFp_set_infity(struct EFp *A){
-    Fp_set_ui(&A->x,0);
-    Fp_set_ui(&A->y,0);
+    Fp_set_ui(&A->px,0);
+    Fp_set_ui(&A->py,0);
     A->isInfinity=TRUE;
 }
 void EFp_clear(struct EFp *A){
-    Fp_clear(&A->x);
-    Fp_clear(&A->y);
+    Fp_clear(&A->px);
+    Fp_clear(&A->py);
 }
 void EFp_printf(struct EFp *A){
-    gmp_printf("(%Zd,%Zd)\n",A->x.x_0,A->y.x_0);
+    gmp_printf("(%Zd,%Zd)\n",A->px.x_0,A->py.x_0);
 }
 void EFp_SCM(struct EFp *RES, struct EFp *P,mpz_t j){
     int i,length;
@@ -1677,7 +1876,7 @@ void EFp_ECD(struct EFp *RES, struct EFp *P){
         EFp_set(RES,P);
         return;
     }
-    if(mpz_sgn(P->y.x_0)==0){//P.y==0
+    if(mpz_sgn(P->py.x_0)==0){//P.y==0
         EFp_set_infity(RES);
         return;
     }
@@ -1690,21 +1889,21 @@ void EFp_ECD(struct EFp *RES, struct EFp *P){
     Fp_init(&y);
     EFp_init(&t_RES);
     
-    Fp_mul(&x,&P->x,&P->x);
+    Fp_mul(&x,&P->px,&P->px);
     Fp_add(&tmp,&x,&x);
     Fp_add(&x,&tmp,&x);//3x^2
-    Fp_add(&y,&P->y,&P->y);//2y
+    Fp_add(&y,&P->py,&P->py);//2y
     
     Fp_div(&lambda,&x,&y);
     Fp_mul(&tmp,&lambda,&lambda);
-    Fp_add(&x,&P->x,&P->x);
+    Fp_add(&x,&P->px,&P->px);
     Fp_sub(&x,&tmp,&x);
-    Fp_sub(&tmp,&P->x,&x);
+    Fp_sub(&tmp,&P->px,&x);
     
-    Fp_set(&t_RES.x,&x);
+    Fp_set(&t_RES.px,&x);
     
     Fp_mul(&tmp,&tmp,&lambda);
-    Fp_sub(&t_RES.y,&tmp,&P->y);
+    Fp_sub(&t_RES.py,&tmp,&P->py);
     
     EFp_set(RES,&t_RES);
     
@@ -1723,7 +1922,7 @@ void EFp_ECA(struct EFp *RES, struct EFp *P1, struct EFp *P2){
         EFp_set(RES,P2);
         return;
     }
-    else if(Fp_cmp(&P1->x,&P2->x)==0&&Fp_cmp(&P1->y,&P2->y)==1){ //P1.x==P2.x&&P1.y!=P2.y
+    else if(Fp_cmp(&P1->px,&P2->px)==0&&Fp_cmp(&P1->py,&P2->py)==1){ //P1.x==P2.x&&P1.y!=P2.y
         EFp_set_infity(RES);
         return;
     }
@@ -1741,16 +1940,16 @@ void EFp_ECA(struct EFp *RES, struct EFp *P1, struct EFp *P2){
     Fp_init(&tmp);
     EFp_init(&t_RES);
     
-    Fp_sub(&x,&P2->x,&P1->x);
-    Fp_sub(&y,&P2->y,&P1->y);
+    Fp_sub(&x,&P2->px,&P1->px);
+    Fp_sub(&y,&P2->py,&P1->py);
     Fp_div(&lambda,&y,&x);
     Fp_mul(&tmp,&lambda,&lambda);
-    Fp_add(&x,&P1->x,&P2->x);
+    Fp_add(&x,&P1->px,&P2->px);
     Fp_sub(&x,&tmp,&x);
-    Fp_sub(&tmp,&P1->x,&x);
-    Fp_set(&t_RES.x,&x);
+    Fp_sub(&tmp,&P1->px,&x);
+    Fp_set(&t_RES.px,&x);
     Fp_mul(&tmp,&tmp,&lambda);
-    Fp_sub(&t_RES.y,&tmp,&P1->y);
+    Fp_sub(&t_RES.py,&tmp,&P1->py);
     
     EFp_set(RES,&t_RES);
     
@@ -1761,7 +1960,7 @@ void EFp_ECA(struct EFp *RES, struct EFp *P1, struct EFp *P2){
     EFp_clear(&t_RES);
 }
 int EFp_cmp(struct EFp *A,struct EFp *B){
-    if(Fp_cmp(&A->x,&B->x)==0 && Fp_cmp(&A->y,&B->y)==0){
+    if(Fp_cmp(&A->px,&B->px)==0 && Fp_cmp(&A->py,&B->py)==0){
         return 0;
     }
     return 1;
@@ -1787,8 +1986,8 @@ void EFp_random_set(struct EFp *RES){
             mpz_add(a.x_0,a.x_0,b);
         }while(mpz_legendre(a.x_0,prime)!=1);
         Q.isInfinity=0;
-        Fp_sqrt(&P.y,&a);
-        Fp_set(&P.x,&x);
+        Fp_sqrt(&P.py,&a);
+        Fp_set(&P.px,&x);
         
         EFp_SCM(&Q,&P,r_div_2);
         // EFp_SCM(&P,&P,p2);
@@ -1828,29 +2027,28 @@ void EFp_random_set(struct EFp *RES){
     // mpz_clear(set_3);
 }
 
-//-----------------------------------------------------------------------------------------
-
+#pragma mark **EFp3** method implementations
 void EFp3_init(struct EFp3 *A){
-    Fp3_init(&A->x);
-    Fp3_init(&A->y);
+    Fp3_init(&A->p3x);
+    Fp3_init(&A->p3y);
     A->isInfinity=FALSE;
 }
 void EFp3_set(struct EFp3 *A,struct EFp3 *B){
-    Fp3_set(&A->x,&B->x);
-    Fp3_set(&A->y,&B->y);
+    Fp3_set(&A->p3x,&B->p3x);
+    Fp3_set(&A->p3y,&B->p3y);
     A->isInfinity=B->isInfinity;
 }
 void EFp3_set_infity(struct EFp3 *A){
-    Fp3_set_ui(&A->x,0);
-    Fp3_set_ui(&A->y,0);
+    Fp3_set_ui(&A->p3x,0);
+    Fp3_set_ui(&A->p3y,0);
     A->isInfinity=TRUE;
 }
 void EFp3_clear(struct EFp3 *A){
-    Fp3_clear(&A->x);
-    Fp3_clear(&A->y);
+    Fp3_clear(&A->p3x);
+    Fp3_clear(&A->p3y);
 }
 void EFp3_printf(struct EFp3 *A){
-    gmp_printf("(%Zd,%Zd,%Zd,%Zd,%Zd,%Zd)\n",A->x.a0.x_0,A->x.a1.x_0,A->x.a2.x_0,A->y.a0.x_0,A->y.a1.x_0,A->y.a2.x_0);
+    gmp_printf("(%Zd,%Zd,%Zd,%Zd,%Zd,%Zd)\n",A->p3x.a0.x_0,A->p3x.a1.x_0,A->p3x.a2.x_0,A->p3y.a0.x_0,A->p3y.a1.x_0,A->p3y.a2.x_0);
 }
 void EFp3_ECD(struct EFp3 *RES, struct EFp3 *P){
     if(P->isInfinity==TRUE){
@@ -1860,7 +2058,7 @@ void EFp3_ECD(struct EFp3 *RES, struct EFp3 *P){
     mpz_t cmp;
     mpz_init(cmp);
     mpz_set_ui(cmp,0);
-    if(Fp3_cmp_mpz(&P->y,cmp)==0){//P.y==0
+    if(Fp3_cmp_mpz(&P->p3y,cmp)==0){//P.y==0
         EFp3_set_infity(RES);
         return;
     }
@@ -1873,18 +2071,18 @@ void EFp3_ECD(struct EFp3 *RES, struct EFp3 *P){
     Fp3_init(&y);
     EFp3_init(&t_RES);
     
-    Fp3_mul(&x,&P->x,&P->x);
+    Fp3_mul(&x,&P->p3x,&P->p3x);
     Fp3_add(&tmp,&x,&x);
     Fp3_add(&x,&tmp,&x);
-    Fp3_add(&y,&P->y,&P->y);
+    Fp3_add(&y,&P->p3y,&P->p3y);
     Fp3_div(&lambda,&x,&y);
     Fp3_mul(&tmp,&lambda,&lambda);
-    Fp3_add(&x,&P->x,&P->x);
+    Fp3_add(&x,&P->p3x,&P->p3x);
     Fp3_sub(&x,&tmp,&x);
-    Fp3_sub(&tmp,&P->x,&x);
-    Fp3_set(&t_RES.x,&x);
+    Fp3_sub(&tmp,&P->p3x,&x);
+    Fp3_set(&t_RES.p3x,&x);
     Fp3_mul(&tmp,&tmp,&lambda);
-    Fp3_sub(&t_RES.y,&tmp,&P->y);
+    Fp3_sub(&t_RES.p3y,&tmp,&P->p3y);
     
     EFp3_set(RES,&t_RES);
     
@@ -1903,7 +2101,7 @@ void EFp3_ECA(struct EFp3 *RES, struct EFp3 *P1, struct EFp3 *P2){
         EFp3_set(RES,P2);
         return;
     }
-    else if(Fp3_cmp(&P1->x,&P2->x)==0&&Fp3_cmp(&P1->y,&P2->y)==1){ //P1.x==P2.x&&P1.y!=P2.y
+    else if(Fp3_cmp(&P1->p3x,&P2->p3x)==0&&Fp3_cmp(&P1->p3y,&P2->p3y)==1){ //P1.x==P2.x&&P1.y!=P2.y
         EFp3_set_infity(RES);
         return;
     }
@@ -1921,16 +2119,16 @@ void EFp3_ECA(struct EFp3 *RES, struct EFp3 *P1, struct EFp3 *P2){
     Fp3_init(&tmp);
     EFp3_init(&t_RES);
     
-    Fp3_sub(&x,&P2->x,&P1->x);
-    Fp3_sub(&y,&P2->y,&P1->y);
+    Fp3_sub(&x,&P2->p3x,&P1->p3x);
+    Fp3_sub(&y,&P2->p3y,&P1->p3y);
     Fp3_div(&lambda,&y,&x);
     Fp3_mul(&tmp,&lambda,&lambda);
-    Fp3_add(&x,&P1->x,&P2->x);
+    Fp3_add(&x,&P1->p3x,&P2->p3x);
     Fp3_sub(&x,&tmp,&x);
-    Fp3_sub(&tmp,&P1->x,&x);
-    Fp3_set(&t_RES.x,&x);
+    Fp3_sub(&tmp,&P1->p3x,&x);
+    Fp3_set(&t_RES.p3x,&x);
     Fp3_mul(&tmp,&tmp,&lambda);
-    Fp3_sub(&t_RES.y,&tmp,&P1->y);
+    Fp3_sub(&t_RES.p3y,&tmp,&P1->p3y);
     
     EFp3_set(RES,&t_RES);
     
@@ -1963,17 +2161,17 @@ void EFp3_SCM(struct EFp3 *RES, struct EFp3 *P, mpz_t j){
     return;
 }
 int EFp3_cmp(struct EFp3 *A,struct EFp3 *B){
-    if(Fp3_cmp(&A->x,&B->x)==0 && Fp3_cmp(&A->y,&B->y)==0){
+    if(Fp3_cmp(&A->p3x,&B->p3x)==0 && Fp3_cmp(&A->p3y,&B->p3y)==0){
         return 0;
     }
     return 1;
 }
 void EFp3_set_EFp(struct EFp3 *A,struct EFp *B){
-    Fp3_set_ui(&A->x,0);
-    Fp3_set_ui(&A->y,0);
+    Fp3_set_ui(&A->p3x,0);
+    Fp3_set_ui(&A->p3y,0);
     
-    Fp_set(&A->x.a0,&B->x);
-    Fp_set(&A->y.a0,&B->y);
+    Fp_set(&A->p3x.a0,&B->px);
+    Fp_set(&A->p3y.a0,&B->py);
     A->isInfinity=B->isInfinity;
 }
 void EFp3_random_set(struct EFp3 *RES){
@@ -2013,8 +2211,8 @@ void EFp3_random_set(struct EFp3 *RES){
         mpz_add(a.a0.x_0,a.a0.x_0,b);
     }while(Fp3_legendre(&a)!=1);
     P.isInfinity=FALSE;
-    Fp3_sqrt(&P.y,&a);
-    Fp3_set(&P.x,&x);
+    Fp3_sqrt(&P.p3y,&a);
+    Fp3_set(&P.p3x,&x);
     
     EFp3_SCM(&P,&P,r3);
     EFp3_set(RES,&P);
@@ -2028,37 +2226,37 @@ void EFp3_random_set(struct EFp3 *RES){
 void EFp3_neg(struct EFp3 *RES, struct EFp3 *A){
     struct EFp3 tmp;
     EFp3_init(&tmp);
-    Fp3_neg(&tmp.y,&A->y);
-    Fp3_set(&tmp.x,&A->x);
+    Fp3_neg(&tmp.p3y,&A->p3y);
+    Fp3_set(&tmp.p3x,&A->p3x);
     
     EFp3_set(RES,&tmp);
     EFp3_clear(&tmp);
 }
 
-//-----------------------------------------------------------------------------------------
 
+#pragma mark **EFp6** method implementations
 void EFp6_init(struct EFp6 *A){
-    Fp6_init(&A->x);
-    Fp6_init(&A->y);
+    Fp6_init(&A->p6x);
+    Fp6_init(&A->p6y);
     A->isInfinity=FALSE;
 }
 void EFp6_set(struct EFp6 *A,struct EFp6 *B){
-    Fp6_set(&A->x,&B->x);
-    Fp6_set(&A->y,&B->y);
+    Fp6_set(&A->p6x,&B->p6x);
+    Fp6_set(&A->p6y,&B->p6y);
     A->isInfinity=B->isInfinity;
 }
 void EFp6_set_infity(struct EFp6 *A){
-    Fp6_set_ui(&A->x,0);
-    Fp6_set_ui(&A->y,0);
+    Fp6_set_ui(&A->p6x,0);
+    Fp6_set_ui(&A->p6y,0);
     A->isInfinity=TRUE;
 }
 void EFp6_clear(struct EFp6 *A){
-    Fp6_clear(&A->x);
-    Fp6_clear(&A->y);
+    Fp6_clear(&A->p6x);
+    Fp6_clear(&A->p6y);
 }
 void EFp6_printf(struct EFp6 *A){
-    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->x.a0.a0.x_0,A->x.a0.a1.x_0,A->x.a0.a2.x_0,A->x.a1.a0.x_0,A->x.a1.a1.x_0,A->x.a1.a2.x_0);
-    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->y.a0.a0.x_0,A->y.a0.a1.x_0,A->y.a0.a2.x_0,A->y.a1.a0.x_0,A->y.a1.a1.x_0,A->y.a1.a2.x_0);
+    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->p6x.a0.a0.x_0,A->p6x.a0.a1.x_0,A->p6x.a0.a2.x_0,A->p6x.a1.a0.x_0,A->p6x.a1.a1.x_0,A->p6x.a1.a2.x_0);
+    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->p6y.a0.a0.x_0,A->p6y.a0.a1.x_0,A->p6y.a0.a2.x_0,A->p6y.a1.a0.x_0,A->p6y.a1.a1.x_0,A->p6y.a1.a2.x_0);
 }
 void EFp6_ECD(struct EFp6 *RES, struct EFp6 *P){
     if(P->isInfinity==TRUE){
@@ -2068,7 +2266,7 @@ void EFp6_ECD(struct EFp6 *RES, struct EFp6 *P){
     mpz_t cmp;
     mpz_init(cmp);
     mpz_set_ui(cmp,0);
-    if(Fp6_cmp_mpz(&P->y,cmp)==0){//P.y==0
+    if(Fp6_cmp_mpz(&P->p6y,cmp)==0){//P.y==0
         EFp6_set_infity(RES);
         return;
     }
@@ -2081,18 +2279,18 @@ void EFp6_ECD(struct EFp6 *RES, struct EFp6 *P){
     Fp6_init(&y);
     EFp6_init(&t_RES);
     
-    Fp6_mul(&x,&P->x,&P->x);
+    Fp6_mul(&x,&P->p6x,&P->p6x);
     Fp6_add(&tmp,&x,&x);
     Fp6_add(&x,&tmp,&x);
-    Fp6_add(&y,&P->y,&P->y);
+    Fp6_add(&y,&P->p6y,&P->p6y);
     Fp6_div(&lambda,&x,&y);
     Fp6_mul(&tmp,&lambda,&lambda);
-    Fp6_add(&x,&P->x,&P->x);
+    Fp6_add(&x,&P->p6x,&P->p6x);
     Fp6_sub(&x,&tmp,&x);
-    Fp6_sub(&tmp,&P->x,&x);
-    Fp6_set(&t_RES.x,&x);
+    Fp6_sub(&tmp,&P->p6x,&x);
+    Fp6_set(&t_RES.p6x,&x);
     Fp6_mul(&tmp,&tmp,&lambda);
-    Fp6_sub(&t_RES.y,&tmp,&P->y);
+    Fp6_sub(&t_RES.p6y,&tmp,&P->p6y);
     
     EFp6_set(RES,&t_RES);
     
@@ -2111,7 +2309,7 @@ void EFp6_ECA(struct EFp6 *RES, struct EFp6 *P1, struct EFp6 *P2){
         EFp6_set(RES,P2);
         return;
     }
-    else if(Fp6_cmp(&P1->x,&P2->x)==0&&Fp6_cmp(&P1->y,&P2->y)==1){ //P1.x==P2.x&&P1.y!=P2.y
+    else if(Fp6_cmp(&P1->p6x,&P2->p6x)==0&&Fp6_cmp(&P1->p6y,&P2->p6y)==1){ //P1.x==P2.x&&P1.y!=P2.y
         EFp6_set_infity(RES);
         return;
     }
@@ -2129,16 +2327,16 @@ void EFp6_ECA(struct EFp6 *RES, struct EFp6 *P1, struct EFp6 *P2){
     Fp6_init(&tmp);
     EFp6_init(&t_RES);
     
-    Fp6_sub(&x,&P2->x,&P1->x);
-    Fp6_sub(&y,&P2->y,&P1->y);
+    Fp6_sub(&x,&P2->p6x,&P1->p6x);
+    Fp6_sub(&y,&P2->p6y,&P1->p6y);
     Fp6_div(&lambda,&y,&x);
     Fp6_mul(&tmp,&lambda,&lambda);
-    Fp6_add(&x,&P1->x,&P2->x);
+    Fp6_add(&x,&P1->p6x,&P2->p6x);
     Fp6_sub(&x,&tmp,&x);
-    Fp6_sub(&tmp,&P1->x,&x);
-    Fp6_set(&t_RES.x,&x);
+    Fp6_sub(&tmp,&P1->p6x,&x);
+    Fp6_set(&t_RES.p6x,&x);
     Fp6_mul(&tmp,&tmp,&lambda);
-    Fp6_sub(&t_RES.y,&tmp,&P1->y);
+    Fp6_sub(&t_RES.p6y,&tmp,&P1->p6y);
     
     EFp6_set(RES,&t_RES);
     
@@ -2170,7 +2368,7 @@ void EFp6_SCM(struct EFp6 *RES,struct EFp6 *P,mpz_t j){
     return;
 }
 int EFp6_cmp(struct EFp6 *A,struct EFp6 *B){
-    if(Fp6_cmp(&A->x,&B->x)==0 && Fp6_cmp(&A->y,&B->y)==0){
+    if(Fp6_cmp(&A->p6x,&B->p6x)==0 && Fp6_cmp(&A->p6y,&B->p6y)==0){
         return 0;
     }
     return 1;
@@ -2217,8 +2415,8 @@ void EFp6_random_set(struct EFp6 *RES){
         Fp6_mul(&a,&a,&x);
         mpz_add(a.a0.a0.x_0,a.a0.a0.x_0,b);
     }while(Fp6_legendre(&a)!=1);
-    Fp6_sqrt(&P.y,&a);
-    Fp6_set(&P.x,&x);
+    Fp6_sqrt(&P.p6y,&a);
+    Fp6_set(&P.p6x,&x);
     
     mpz_t r6_div_r2;
     mpz_init(r6_div_r2);
@@ -2238,35 +2436,34 @@ void EFp6_random_set(struct EFp6 *RES){
     mpz_clear(r6_div_r2);
 }
 
-//-----------------------------------------------------------------------------------------
-
+#pragma mark **EFp18** method implementations
 void EFp18_init(struct EFp18 *A){
-    Fp18_init(&A->x);
-    Fp18_init(&A->y);
+    Fp18_init(&A->p18x);
+    Fp18_init(&A->p18y);
     A->isInfinity=FALSE;
 }
 void EFp18_set(struct EFp18 *A,struct EFp18 *B){
-    Fp18_set(&A->x,&B->x);
-    Fp18_set(&A->y,&B->y);
+    Fp18_set(&A->p18x,&B->p18x);
+    Fp18_set(&A->p18y,&B->p18y);
     A->isInfinity=B->isInfinity;
 }
 void EFp18_set_infity(struct EFp18 *A){
-    Fp18_set_ui(&A->x,0);
-    Fp18_set_ui(&A->y,0);
+    Fp18_set_ui(&A->p18x,0);
+    Fp18_set_ui(&A->p18y,0);
     A->isInfinity=TRUE;
 }
 void EFp18_clear(struct EFp18 *A){
-    Fp18_clear(&A->x);
-    Fp18_clear(&A->y);
+    Fp18_clear(&A->p18x);
+    Fp18_clear(&A->p18y);
 }
 void EFp18_printf(struct EFp18 *A){
-    gmp_printf("(%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->x.m0.a0.a0.x_0,A->x.m0.a0.a1.x_0,A->x.m0.a0.a2.x_0,A->x.m0.a1.a0.x_0,A->x.m0.a1.a1.x_0,A->x.m0.a1.a2.x_0);
-    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->x.m1.a0.a0.x_0,A->x.m1.a0.a1.x_0,A->x.m1.a0.a2.x_0,A->x.m1.a1.a0.x_0,A->x.m1.a1.a1.x_0,A->x.m1.a1.a2.x_0);
-    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd)\n",A->x.m2.a0.a0.x_0,A->x.m2.a0.a1.x_0,A->x.m2.a0.a2.x_0,A->x.m2.a1.a0.x_0,A->x.m2.a1.a1.x_0,A->x.m2.a1.a2.x_0);
+    gmp_printf("(%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->p18x.m0.a0.a0.x_0,A->p18x.m0.a0.a1.x_0,A->p18x.m0.a0.a2.x_0,A->p18x.m0.a1.a0.x_0,A->p18x.m0.a1.a1.x_0,A->p18x.m0.a1.a2.x_0);
+    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->p18x.m1.a0.a0.x_0,A->p18x.m1.a0.a1.x_0,A->p18x.m1.a0.a2.x_0,A->p18x.m1.a1.a0.x_0,A->p18x.m1.a1.a1.x_0,A->p18x.m1.a1.a2.x_0);
+    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd)\n",A->p18x.m2.a0.a0.x_0,A->p18x.m2.a0.a1.x_0,A->p18x.m2.a0.a2.x_0,A->p18x.m2.a1.a0.x_0,A->p18x.m2.a1.a1.x_0,A->p18x.m2.a1.a2.x_0);
     
-    gmp_printf("(%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->y.m0.a0.a0.x_0,A->y.m0.a0.a1.x_0,A->y.m0.a0.a2.x_0,A->y.m0.a1.a0.x_0,A->y.m0.a1.a1.x_0,A->y.m0.a1.a2.x_0);
-    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->y.m1.a0.a0.x_0,A->y.m1.a0.a1.x_0,A->y.m1.a0.a2.x_0,A->y.m1.a1.a0.x_0,A->y.m1.a1.a1.x_0,A->y.m1.a1.a2.x_0);
-    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd)\n\n",A->y.m2.a0.a0.x_0,A->y.m2.a0.a1.x_0,A->y.m2.a0.a2.x_0,A->y.m2.a1.a0.x_0,A->y.m2.a1.a1.x_0,A->y.m2.a1.a2.x_0);
+    gmp_printf("(%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->p18y.m0.a0.a0.x_0,A->p18y.m0.a0.a1.x_0,A->p18y.m0.a0.a2.x_0,A->p18y.m0.a1.a0.x_0,A->p18y.m0.a1.a1.x_0,A->p18y.m0.a1.a2.x_0);
+    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd\n",A->p18y.m1.a0.a0.x_0,A->p18y.m1.a0.a1.x_0,A->p18y.m1.a0.a2.x_0,A->p18y.m1.a1.a0.x_0,A->p18y.m1.a1.a1.x_0,A->p18y.m1.a1.a2.x_0);
+    gmp_printf("%Zd,%Zd,%Zd,%Zd,%Zd,%Zd)\n\n",A->p18y.m2.a0.a0.x_0,A->p18y.m2.a0.a1.x_0,A->p18y.m2.a0.a2.x_0,A->p18y.m2.a1.a0.x_0,A->p18y.m2.a1.a1.x_0,A->p18y.m2.a1.a2.x_0);
 }
 void EFp18_ECD(struct EFp18 *RES, struct EFp18 *P){
     if(P->isInfinity==TRUE){
@@ -2276,7 +2473,7 @@ void EFp18_ECD(struct EFp18 *RES, struct EFp18 *P){
     mpz_t cmp;
     mpz_init(cmp);
     mpz_set_ui(cmp,0);
-    if(Fp18_cmp_mpz(&P->y,cmp)==0){//P.y==0
+    if(Fp18_cmp_mpz(&P->p18y,cmp)==0){//P.y==0
         EFp18_set_infity(RES);
         return;
     }
@@ -2289,18 +2486,18 @@ void EFp18_ECD(struct EFp18 *RES, struct EFp18 *P){
     Fp18_init(&y);
     EFp18_init(&t_RES);
     
-    Fp18_mul(&x,&P->x,&P->x);
+    Fp18_mul(&x,&P->p18x,&P->p18x);
     Fp18_add(&tmp,&x,&x);
     Fp18_add(&x,&tmp,&x);
-    Fp18_add(&y,&P->y,&P->y);
+    Fp18_add(&y,&P->p18y,&P->p18y);
     Fp18_div(&lambda,&x,&y);
     Fp18_mul(&tmp,&lambda,&lambda);
-    Fp18_add(&x,&P->x,&P->x);
+    Fp18_add(&x,&P->p18x,&P->p18x);
     Fp18_sub(&x,&tmp,&x);
-    Fp18_sub(&tmp,&P->x,&x);
-    Fp18_set(&t_RES.x,&x);
+    Fp18_sub(&tmp,&P->p18x,&x);
+    Fp18_set(&t_RES.p18x,&x);
     Fp18_mul(&tmp,&tmp,&lambda);
-    Fp18_sub(&t_RES.y,&tmp,&P->y);
+    Fp18_sub(&t_RES.p18y,&tmp,&P->p18y);
     
     EFp18_set(RES,&t_RES);
     
@@ -2319,7 +2516,7 @@ void EFp18_ECA(struct EFp18 *RES, struct EFp18 *P1, struct EFp18 *P2){
         EFp18_set(RES,P2);
         return;
     }
-    else if(Fp18_cmp(&P1->x,&P2->x)==0&&Fp18_cmp(&P1->y,&P2->y)==1){ //P1.x==P2.x&&P1.y!=P2.y
+    else if(Fp18_cmp(&P1->p18x,&P2->p18x)==0&&Fp18_cmp(&P1->p18y,&P2->p18y)==1){ //P1.x==P2.x&&P1.y!=P2.y
         EFp18_set_infity(RES);
         return;
     }
@@ -2337,16 +2534,16 @@ void EFp18_ECA(struct EFp18 *RES, struct EFp18 *P1, struct EFp18 *P2){
     Fp18_init(&tmp);
     EFp18_init(&t_RES);
     
-    Fp18_sub(&x,&P2->x,&P1->x);
-    Fp18_sub(&y,&P2->y,&P1->y);
+    Fp18_sub(&x,&P2->p18x,&P1->p18x);
+    Fp18_sub(&y,&P2->p18y,&P1->p18y);
     Fp18_div(&lambda,&y,&x);
     Fp18_mul(&tmp,&lambda,&lambda);
-    Fp18_add(&x,&P1->x,&P2->x);
+    Fp18_add(&x,&P1->p18x,&P2->p18x);
     Fp18_sub(&x,&tmp,&x);
-    Fp18_sub(&tmp,&P1->x,&x);
-    Fp18_set(&t_RES.x,&x);
+    Fp18_sub(&tmp,&P1->p18x,&x);
+    Fp18_set(&t_RES.p18x,&x);
     Fp18_mul(&tmp,&tmp,&lambda);
-    Fp18_sub(&t_RES.y,&tmp,&P1->y);
+    Fp18_sub(&t_RES.p18y,&tmp,&P1->p18y);
     
     EFp18_set(RES,&t_RES);
     
@@ -2378,7 +2575,7 @@ void EFp18_SCM(struct EFp18 *RES,struct EFp18 *P,mpz_t j){
     return;
 }
 int EFp18_cmp(struct EFp18 *A,struct EFp18 *B){
-    if(Fp18_cmp(&A->x,&B->x)==0 && Fp18_cmp(&A->y,&B->y)==0){
+    if(Fp18_cmp(&A->p18x,&B->p18x)==0 && Fp18_cmp(&A->p18y,&B->p18y)==0){
         return 0;
     }
     return 1;
@@ -2438,8 +2635,8 @@ void EFp18_random_set(struct EFp18 *RES){
         Fp18_mul(&a,&a,&x);
         mpz_add(a.m0.a0.a0.x_0,a.m0.a0.a0.x_0,b);
     }while(Fp18_legendre(&a)!=1);
-    Fp18_sqrt(&P.y,&a);
-    Fp18_set(&P.x,&x);
+    Fp18_sqrt(&P.p18y,&a);
+    Fp18_set(&P.p18x,&x);
     
     EFp18_SCM(RES,&P,r18);
     
@@ -2452,19 +2649,19 @@ void EFp18_random_set(struct EFp18 *RES){
     mpz_clear(t18);
 }
 void EFp18_set_EFp(struct EFp18 *A,struct EFp *B){
-    Fp18_set_ui(&A->x,0);
-    Fp18_set_ui(&A->y,0);
+    Fp18_set_ui(&A->p18x,0);
+    Fp18_set_ui(&A->p18y,0);
     
-    Fp_set(&A->x.m0.a0.a0,&B->x);
-    Fp_set(&A->y.m0.a0.a0,&B->y);
+    Fp_set(&A->p18x.m0.a0.a0,&B->px);
+    Fp_set(&A->p18y.m0.a0.a0,&B->py);
     A->isInfinity=B->isInfinity;
 }
 void EFp18_frobenius_map(struct EFp18 *RES,struct EFp18 *A){
     struct EFp18 tmp;
     EFp18_init(&tmp);
     
-    Fp18_pow(&tmp.x,&A->x,prime);
-    Fp18_pow(&tmp.y,&A->y,prime);
+    Fp18_pow(&tmp.p18x,&A->p18x,prime);
+    Fp18_pow(&tmp.p18y,&A->p18y,prime);
     
     EFp18_set(RES,&tmp);
     
@@ -2479,8 +2676,8 @@ void EFp18_random_set_for_Ate(struct EFp18 *RES){
     EFp18_random_set(&P);
     
     EFp18_frobenius_map(&P_frobenius,&P);
-    Fp18_neg(&tmp_EFp18.y,&P.y);
-    Fp18_set(&tmp_EFp18.x,&P.x);
+    Fp18_neg(&tmp_EFp18.p18y,&P.p18y);
+    Fp18_set(&tmp_EFp18.p18x,&P.p18x);
     
     EFp18_ECA(&tmp_EFp18,&tmp_EFp18,&P_frobenius);
     
@@ -2492,7 +2689,7 @@ void EFp18_random_set_for_Ate(struct EFp18 *RES){
 }
 
 //-----------------------------------------------------------------------------------------
-
+#pragma mark Parameters method implementations
 void EFp_set_EC_parameter(void){
     //set p,r
     mpz_t p_tmp,r_tmp,t_tmp;
@@ -2564,6 +2761,7 @@ void EFp_set_EC_parameter(void){
         exit(0);
     }
     get_C1_C1bar();
+    get_C1omega_C1omegabar();
     
     struct EFp P,RES;
     int legendle;
@@ -2584,8 +2782,8 @@ void EFp_set_EC_parameter(void){
             mpz_powm_ui(a.x_0,x.x_0,3,prime);
             mpz_add(a.x_0,a.x_0,tmp_b);
             if((legendle=mpz_legendre(a.x_0,prime))==1){
-                Fp_sqrt(&P.y,&a);
-                Fp_set(&P.x,&x);
+                Fp_sqrt(&P.py,&a);
+                Fp_set(&P.px,&x);
                 EFp_SCM(&RES,&P,r_order_EFp);
                 if(RES.isInfinity==TRUE){
                     mpz_set(b,tmp_b);
