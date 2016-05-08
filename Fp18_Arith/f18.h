@@ -1,3 +1,11 @@
+//
+//  testprime.h
+//  Fp18_Arith
+//
+//  Created by Khandaker Md. Al-Amin on 4/29/16.
+//  Copyright © 2016 Khandaker Md. Al-Amin. All rights reserved.
+//
+
 #include <stdio.h>
 #include <gmp.h>
 #include <string.h>

@@ -6,7 +6,7 @@
 //  Copyright © 2016 Khandaker Md. Al-Amin. All rights reserved.
 //
 
-#include"embedding_degree18.h"
+#include"f18.h"
 #include "parameters.h"
 #include <assert.h>
 
@@ -32,6 +32,8 @@ mpz_set_str(prime,"6385084887533890921954397202088178433160629955151245745440107
     mpz_init(c1_leg_bar);
     mpz_init(c1_omega);
     mpz_init(c1_omega_bar);
+    
+//    getParameters(512);
     
 //    get_C1_C1bar();
 //    get_C1omega_C1omegabar();
@@ -2711,6 +2713,12 @@ void EFp_set_EC_parameter(void){
     mpz_init(tmp1);
     mpz_init(tmp2);
     
+    mpz_tdiv_r_ui(tmp1,X,42); //tmp1 = x/42 | x = 14(mod 42)
+    while(mpz_cmp_ui(tmp1,14)!=0){
+        mpz_add_ui(X,X,1);
+        mpz_tdiv_r_ui(tmp1,X,42);
+    }
+    
     mpz_mul(xpow2,X,X);
     mpz_mul(xpow3,xpow2,X);
     mpz_mul(xpow4,xpow2,xpow2);
@@ -2719,47 +2727,55 @@ void EFp_set_EC_parameter(void){
     mpz_mul(xpow7,xpow6,X);
     mpz_mul(xpow8,xpow4,xpow4);
     
-    //t=1/7(x^4+16x+7)
+    //trace t(x)=1/7(x^4+16x+7)
     mpz_mul_ui(tmp1,X,16);
     mpz_add_ui(tmp2,xpow4,7);
     mpz_add(t_tmp,tmp1,tmp2);
-    
     mpz_div_ui(t_trace,t_tmp,7);
     
-    //r=x^6+37x^3+343
+    //order r(x)=x^6+37x^3+343
     mpz_mul_ui(tmp1,xpow3,37);
     mpz_add_ui(tmp2,xpow6,343);
     mpz_add(r_tmp,tmp1,tmp2);
-    
     mpz_set(r_order,r_tmp);
     
-    //p=1/21(x^8+5x^7+7x^6+37x^5+188x^4+259x^3+343x^2+1763x+2401)
-    mpz_mul_ui(tmp1,xpow7,5);
-    mpz_add(p_tmp,tmp1,xpow8);
-    mpz_mul_ui(tmp1,xpow6,7);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow5,37);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow4,188);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow3,259);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow2,343);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,X,1763);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_add_ui(p_tmp,p_tmp,2401);
-    
-    mpz_div_ui(prime,p_tmp,21);
-    
+    //r = p+1-t
     mpz_add_ui(r_order_EFp,prime,1);
     mpz_sub(r_order_EFp,r_order_EFp,t_trace);
-    
-    if(mpz_probab_prime_p(prime,25)==0){
+
+    if(mpz_probab_prime_p(prime,25)>=0){
         gmp_printf("p:%Zd\n",prime);
-        printf("not  prime number!\n");
-        exit(0);
+        
     }
+    else
+    {
+        //p=1/21(x^8+5x^7+7x^6+37x^5+188x^4+259x^3+343x^2+1763x+2401)
+        mpz_mul_ui(tmp1,xpow7,5);
+        mpz_add(p_tmp,tmp1,xpow8);
+        mpz_mul_ui(tmp1,xpow6,7);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow5,37);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow4,188);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow3,259);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow2,343);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,X,1763);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_add_ui(p_tmp,p_tmp,2401);
+        
+        mpz_div_ui(prime,p_tmp,21);
+        
+        if(mpz_probab_prime_p(prime,25)==0){
+            gmp_printf("p:%Zd\n",prime);
+            printf("not  prime number!\n");
+            exit(0);
+        }
+    }
+    
+ 
     get_C1_C1bar();
     get_C1omega_C1omegabar();
     

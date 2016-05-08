@@ -32,7 +32,7 @@
 		EFE8E9011CD3AC6E000FE2AC /* testprime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testprime.h; sourceTree = "<group>"; };
 		EFF0AE561CC0F9C40011D3AC /* Fp18_Arith */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Fp18_Arith; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFF0AE591CC0F9C40011D3AC /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		EFF0AE601CC0F9E30011D3AC /* embedding_degree18.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = embedding_degree18.h; sourceTree = "<group>"; };
+		EFF0AE601CC0F9E30011D3AC /* f18.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = f18.h; sourceTree = "<group>"; };
 		EFF0AE611CC0FA190011D3AC /* libgmp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgmp.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,7 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				EFF0AE591CC0F9C40011D3AC /* main.c */,
-				EFF0AE601CC0F9E30011D3AC /* embedding_degree18.h */,
+				EFF0AE601CC0F9E30011D3AC /* f18.h */,
 				EFB77D001CD2EFB200ABCD9F /* parameters.c */,
 				EFB77D011CD2EFB200ABCD9F /* parameters.h */,
 				EFF0AE611CC0FA190011D3AC /* libgmp.a */,
