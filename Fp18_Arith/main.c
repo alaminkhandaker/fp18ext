@@ -2691,7 +2691,7 @@ void EFp18_random_set_for_Ate(struct EFp18 *RES){
 //-----------------------------------------------------------------------------------------
 #pragma mark Parameters method implementations
 void EFp_set_EC_parameter(void){
-    //set p,r
+    
     mpz_t p_tmp,r_tmp,t_tmp;
     mpz_t xpow2,xpow3,xpow4,xpow5,xpow6,xpow7,xpow8;
     mpz_t tmp1,tmp2;
@@ -2804,53 +2804,6 @@ void EFp_set_EC_parameter(void){
 //-----------------------------------------------------------------------------------------
 
 int getParameters(int bit){
-    
-    mpz_t X,X2;
-    mpz_init(X);
-    mpz_init(X2);
-    
-    //    mpz_t u,utmp0,utmp1;
-    //
-    //    mpz_init(u);
-    //    mpz_init(utmp0);
-    //    mpz_init(utmp1);
-    //    //    264+247+243+237+226+225+219−213−27
-    //    mpz_set_ui(u,2);
-    //    mpz_pow_ui(utmp0,u,64);
-    //    mpz_pow_ui(utmp1,u,47);
-    //    mpz_add(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,43);
-    //    mpz_add(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,37);
-    //    mpz_add(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,26);
-    //    mpz_add(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,25);
-    //    mpz_add(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,19);
-    //    mpz_add(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,13);
-    //    mpz_sub(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,13);
-    //    mpz_sub(utmp0,utmp0,utmp1);
-    //    mpz_pow_ui(utmp1,u,7);
-    //    mpz_sub(u,utmp0,utmp1);
-    //    gmp_printf("U %Zd = bit %d\n",u,(int)mpz_sizeinbase(u,2));
-    //    mpz_set(X,u);
-    
-    //==============
-    int X_int = bit;
-    X_int=X_int/8; //bit count?
-    printf("X_int %d\n",X_int);
-    mpz_setbit(X,X_int);
-    gmp_printf("X Set bit %Zd = %d\n",X,(int)mpz_sizeinbase(X,2));
-    mpz_div_ui(X2,X,4);
-    gmp_printf("X2div %Zd = bit %d\n",X2,(int)mpz_sizeinbase(X2,2));
-    mpz_add(X,X2,X);
-    //    mpz_add(X,X2,X);
-    mpz_div_ui(X,X,2);
-    gmp_printf("X = %Zd,HW %ld Bit size %d bit\n",X,mpz_popcount(X),(int)mpz_sizeinbase(X,2));
-    
     
     mpz_t p_tmp,r_tmp;
     mpz_t xpow2,xpow3,xpow4,xpow5,xpow6,xpow7,xpow8;
@@ -2989,8 +2942,6 @@ int getParameters(int bit){
                     mpz_mod_ui(p_mod4,p_tmp,4);
                     gmp_printf("P mod 4 = %Zd\n",p_mod4);
                     
-                    
-                    //                    if ((mpz_cmp_ui(p_1,0) == 0) && (mpz_cmp_ui(p_mod4,3) == 0) && (mpz_cmp_ui(c1_tmp,0) != 0 &&  mpz_cmp_ui(c1_tmp,1) != 0) && (leg == -1 || mpz_cmp_ui(p_tmp1,leg) == 0))
                     if ((mpz_cmp_ui(c1_tmp,0) != 0 &&  mpz_cmp_ui(c1_tmp,1) != 0) && (leg == -1 || mpz_cmp_ui(p_m1,leg) == 0))
                     {
                         count192p_cond++;
