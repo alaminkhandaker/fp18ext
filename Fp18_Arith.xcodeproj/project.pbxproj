@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EFB77D021CD2EFB200ABCD9F /* parameters.c in Sources */ = {isa = PBXBuildFile; fileRef = EFB77D001CD2EFB200ABCD9F /* parameters.c */; };
+		EFBEED561CE0746100531477 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFBEED551CE0746100531477 /* Foundation.framework */; };
 		EFF0AE5A1CC0F9C40011D3AC /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = EFF0AE591CC0F9C40011D3AC /* main.c */; };
 		EFF0AE621CC0FA190011D3AC /* libgmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF0AE611CC0FA190011D3AC /* libgmp.a */; };
 /* End PBXBuildFile section */
@@ -27,6 +28,7 @@
 /* Begin PBXFileReference section */
 		EFB77D001CD2EFB200ABCD9F /* parameters.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = parameters.c; sourceTree = "<group>"; };
 		EFB77D011CD2EFB200ABCD9F /* parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parameters.h; sourceTree = "<group>"; };
+		EFBEED551CE0746100531477 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		EFF0AE561CC0F9C40011D3AC /* Fp18_Arith */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Fp18_Arith; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFF0AE591CC0F9C40011D3AC /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		EFF0AE601CC0F9E30011D3AC /* f18.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = f18.h; sourceTree = "<group>"; };
@@ -38,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFBEED561CE0746100531477 /* Foundation.framework in Frameworks */,
 				EFF0AE621CC0FA190011D3AC /* libgmp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,6 +51,7 @@
 		EF2247F71CDF5F410004A09F /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				EFBEED551CE0746100531477 /* Foundation.framework */,
 				EFF0AE611CC0FA190011D3AC /* libgmp.a */,
 			);
 			name = lib;

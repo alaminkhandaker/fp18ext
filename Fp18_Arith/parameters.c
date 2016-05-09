@@ -49,7 +49,7 @@ int parameters(int bit){
     
     //==============
     int X_int = bit;
-    X_int=X_int/8; //bit count?
+//    X_int=X_int/8; //bit count?
     printf("X_int %d\n",X_int);
     mpz_setbit(X,X_int);
     gmp_printf("X Set bit %Zd = %d\n",X,(int)mpz_sizeinbase(X,2));
@@ -176,11 +176,11 @@ int parameters(int bit){
                 if(k == 0 && j >= 1 && l==0)
                 {
                      count192p++;
-                    if ((int)mpz_sizeinbase(p_tmp,2) <341)
-                    {
-                        printf("Got it %lld\n",count192p);
-                        continue;
-                    }
+//                    if ((int)mpz_sizeinbase(p_tmp,2) <341)
+//                    {
+//                        printf("Got it %lld\n",count192p);
+//                        continue;
+//                    }
                     
                    
                     

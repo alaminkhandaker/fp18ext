@@ -9,21 +9,32 @@
 #include"f18.h"
 #include "parameters.h"
 #include <assert.h>
+#include <pthread.h>
+
+#define NTHREADS 1
 
 #define C1 2
 #define C2 -1
 #define C1_sq 4
+int fp_mul,fp_add;
 
 int main(void)
 {
+
+//    parameters(2);
     mpz_init(X);
-    mpz_set_str(X,"18446893747415302274",10);//192bit
-    
-    
+    mpz_set_str(X,"18446893747415302274",10);//64bit22818362
+//    mpz_set_str(X,"22818362",10);
+//    mpz_set_str(X,"308378",10);//142
+//    mpz_set_str(X,"8206310",10);//180
+//    mpz_set_str(X,"22949066",10);//192bit
     
     mpz_init(prime);
-    //  mpz_set_str(prime,"7",10);
-    mpz_set_str(prime,"638508488753389092195439720208817843316062995515124574544010783086949264599518591426924070465759719017041310253064889352571109595156203400346010025740431",10);
+//    mpz_set_str(prime,"7",10);
+mpz_set_str(prime,"638508488753389092195439720208817843316062995515124574544010783086949264599518591426924070465759719017041310253064889352571109595156203400346010025740431",10);
+//    mpz_set_str(prime,"3894528143915012247208417839403878151510903",10);//142bit-OK
+//    mpz_set_str(prime,"979409517516918544796572365504010559445802441415138011",10);//180bit-OK
+//    mpz_set_str(prime,"3663539846901759754658553027964879455181475328867555947719",10); //192 bit
     mpz_init(r_order);
     mpz_init(r_order_EFp);
     mpz_init(t_trace);
@@ -38,73 +49,95 @@ int main(void)
     gmp_printf("r=%Zd\n",r_order);
     gmp_printf("t=%Zd\n",t_trace);
     gmp_printf("#E(Fp)=%Zd\n",r_order_EFp);
-    
     printf("p = %d bit\n",(int)mpz_sizeinbase(prime,2));
     printf("r = %d bit\n",(int)mpz_sizeinbase(r_order,2));
     printf("t = %d bit\n",(int)mpz_sizeinbase(t_trace,2));
-    gmp_printf("y^2=x^3+%Zd\n",b);
     
-    //    struct Fp3 P,RES,RES1,Q;
-    //    Fp3_init(&P);
-    //    Fp3_init(&Q);
-    //    Fp3_init(&RES);
-    //    Fp3_init(&RES1);
-    //    Fp3_take_input(&P);
-    //    Fp3_invert(&RES, &P);
-    //    printf("new\n");
-    //    Fp3_printf(&RES);
-    //    Fp3_invert_prev(&RES1, &P);
-    //    printf("prev\n");
-    //    Fp3_printf(&RES1);
+    fp_mul = 0;
+    fp_add = 0;
     
-    //    struct Fp6 P,RES,RES1,Q;
-    //    Fp6_init(&P);
-    //    Fp6_init(&Q);
-    //    Fp6_init(&RES);
-    //    Fp6_init(&RES1);
-    //    Fp6_take_input(&P);
-    //    Fp6_invert(&RES, &P);
-    //    printf("new\n");
-    //    Fp6_printf(&RES);
-    //    Fp6_invert_prev(&RES1, &P);
-    //    printf("prev\n");
-    //    Fp6_printf(&RES1);
+    clock_t begin1, end1;
+    clock_t begin2, end2;
+    double time_spent1,time_spent2;
     
-    //    struct Fp18 P,RES,RES1,Q;
-    //    Fp18_init(&P);
-    //    Fp18_init(&Q);
-    //    Fp18_init(&RES);
-    //    Fp18_init(&RES1);
-    //    Fp18_take_input(&P);
-    ////    Fp18_take_input(&Q);
-    ////    Fp18_mul(&RES, &P, &Q);
-    //    Fp18_invert(&RES, &P);
-    //    printf("new\n");
-    //    Fp18_printf(&RES);
-    //    Fp18_invert_prev(&RES1, &P);
-    //    printf("prev\n");
-    //    Fp18_printf(&RES1);
+
+    
+    //        struct Fp3 P,RES,RES1,Q;
+    //        Fp3_init(&P);
+    //        Fp3_init(&Q);
+    //        Fp3_init(&RES);
+    //        Fp3_init(&RES1);
+    //        Fp3_take_input(&P);
+    //        Fp3_invert(&RES, &P);
+    //        printf("new\n");
+    //        Fp3_printf(&RES);
+    //        printf("FP Mul =%d , FP ADD =%d\n",fp_mul,fp_add);
+    //        Fp3_invert_prev(&RES1, &P);
+    //        printf("prev\n");
+    //        Fp3_printf(&RES1);
+    
+    //        struct Fp6 P,RES,RES1,Q;
+    //        Fp6_init(&P);
+    //        Fp6_init(&Q);
+    //        Fp6_init(&RES);
+    //        Fp6_init(&RES1);
+    //        Fp6_take_input(&P);
+    //        Fp6_invert(&RES, &P);
+    //        printf("new\n");
+    //        Fp6_printf(&RES);
+    //    printf("FP Mul =%d , FP ADD =%d\n",fp_mul,fp_add);
+    //        Fp6_invert_prev(&RES1, &P);
+    //        printf("prev\n");
+    //        Fp6_printf(&RES1);
+    
+    struct Fp18 P,RES,RES1,Q;
+    Fp18_init(&P);
+    Fp18_init(&Q);
+    Fp18_init(&RES);
+    Fp18_init(&RES1);
+    Fp18_take_input(&P);
+    //        Fp18_take_input(&Q);
+    //        Fp18_mul(&RES, &P, &Q);
+    
+    begin1 = clock();
+    Fp18_invert(&RES, &P);
+    end1 = clock();
+    printf("New Approach\n");
+    Fp18_printf(&RES);
+    time_spent1 = (double)(end1 - begin1) / CLOCKS_PER_SEC;
+    printf("FP Mul = %d , FP ADD = %d == Time New = %f\n\n",fp_mul,fp_add,time_spent1);
+    begin2 = clock();
+    Fp18_invert_prev(&RES1, &P);
+    end2 = clock();
+    printf("Previous Approach:: \n");
+    Fp18_printf(&RES1);
+    time_spent2 = (double)(end2 - begin2) / CLOCKS_PER_SEC;
+    printf("Time Old = %f\n\n",time_spent2);
     
     
-    
-    
-    //     struct EFp18 P,Q;
+    //    struct EFp18 P,Q;
+    //    EFp18_init(&P);
+    //    EFp18_init(&Q);
     //
-    //     EFp18_init(&P);
-    //     EFp18_init(&Q);
-    //
-    //     EFp18_random_set_for_Ate(&P);
-    //     EFp18_frobenius_map(&Q,&P);
-    //     EFp18_printf(&Q);
-    //     EFp18_SCM(&P,&P,prime);
-    //     EFp18_printf(&P);
-    //     printf("%d\n",EFp18_cmp(&P,&Q));
+    //    EFp18_printf(&Q);
+    //    EFp18_SCM(&P,&P,prime);
+    //    EFp18_printf(&P);
+    //    printf("%d\n",EFp18_cmp(&P,&Q));
     
     mpz_clear(prime);
     mpz_clear(r_order);
     mpz_clear(b);
     mpz_clear(c1_leg);
     mpz_clear(c1_leg_bar);
+    if (time_spent1>time_spent2)
+    {
+        double tmp = time_spent1/time_spent2;
+        printf("New approach takes = %.2f percent more time\n",100/tmp);
+    }
+    else{
+        double tmp = time_spent2/time_spent1;
+        printf("Old approach takes = %.2f percent more time\n",100/tmp);
+    }
     return 0;
 }
 
@@ -195,7 +228,7 @@ void Fp_add(struct Fp *RES,struct Fp *a,struct Fp *b){
     
     mpz_add(tmp.x_0,a->x_0,b->x_0);
     mpz_mod(tmp.x_0,tmp.x_0,prime);
-    
+    fp_add++;
     Fp_set(RES,&tmp);
     Fp_clear(&tmp);
 }
@@ -233,10 +266,10 @@ void Fp_sub_ui(struct Fp *RES,struct Fp *a,unsigned long int b){
 void Fp_mul(struct Fp *RES,struct Fp *a,struct Fp *b){
     struct Fp tmp;
     Fp_init(&tmp);
-    
+    mpz_mod(b->x_0,b->x_0,prime);
     mpz_mul(tmp.x_0,a->x_0,b->x_0);
     mpz_mod(tmp.x_0,tmp.x_0,prime);
-    
+    fp_mul++;
     Fp_set(RES,&tmp);
     Fp_clear(&tmp);
 }
@@ -248,10 +281,8 @@ void Fp_mul_ui(struct Fp *RES,struct Fp *a,unsigned long int b){
     mpz_mod(tmp.x_0,tmp.x_0,prime);
     
     Fp_set(RES,&tmp);
-    
     Fp_clear(&tmp);
 }
-
 void Fp_mul_c1(struct Fp *RES,struct Fp *a){
     struct Fp tmp;
     Fp_init(&tmp);
@@ -270,8 +301,6 @@ void Fp_inv(struct Fp *RES,struct Fp *a){
     Fp_set(RES,&tmp);
     Fp_clear(&tmp);
 }
-
-
 void Fp_div(struct Fp *RES,struct Fp *a,struct Fp *b){
     struct Fp tmp;
     Fp_init(&tmp);
@@ -283,29 +312,7 @@ void Fp_div(struct Fp *RES,struct Fp *a,struct Fp *b){
     Fp_set(RES,&tmp);
     Fp_clear(&tmp);
 }
-//void Fp_pow(struct Fp *RES,struct Fp *A,mpz_t B){//RES = A^B
-//    unsigned long long i,length;
-//    length= (unsigned long long)mpz_sizeinbase(B,2);
-//    char B_binary[length];
-//    mpz_get_str(B_binary,2,B);
-//    printf("Length: %lld\n",length);
-////    printf("p: %s\n",&B_binary[0]);
-//
-//    struct Fp tmp;
-//    Fp_init(&tmp);
-//    Fp_set(&tmp,A);
-//
-//    for(i=1;B_binary[i]!='\0';i++){
-//        Fp_mul(&tmp,&tmp,&tmp);
-//        if(B_binary[i]=='1'){
-//            Fp_mul(&tmp,&tmp,A);
-//        }
-//    }
-//    Fp_set(RES,&tmp);
-//    Fp_clear(&tmp);
-//}
-
-void Fp_pow(struct Fp *RES,struct Fp *A,mpz_t B){//RES = A^B
+void Fp_pow(struct Fp *RES,struct Fp *A,mpz_t B){
     unsigned long long i,length;
     length= (unsigned long long)mpz_sizeinbase(B,2);
     char B_binary[length];
@@ -435,8 +442,8 @@ int Fp_cmp_mpz(struct Fp *A,mpz_t B){
     return 1;
 }
 
-#pragma mark ==Fp3== method implementations
 
+#pragma mark ==Fp3== method implementations
 void Fp3_init(struct Fp3 *A){
     Fp_init(&A->a0);
     Fp_init(&A->a1);
@@ -497,77 +504,6 @@ void Fp3_sub(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
     
     Fp3_set(RES,&tmp);
     Fp3_clear(&tmp);
-}
-
-void Fp3_mul_prev(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
-    //(a0,a1,a2)*(b0,b1,b2)=(x0y0+xi((a1+a2)(b1+b2)-a1b1-x2y2),xix2y2+(a0+a1)(b0+b1)-x0y0-a1b1,a1b1+(a0+a2)(b0+b2)-x0y0-x2y2)
-    struct Fp A0,A1,A2,tmp_a01,tmp_a12,tmp_a20,tmp_b01,tmp_b12,tmp_b20,A3,A4,A5,tmp;
-    struct Fp3 t_RES;
-    Fp_init(&A0);
-    Fp_init(&A1);
-    Fp_init(&A2);
-    Fp_init(&tmp_a01);
-    Fp_init(&tmp_a12);
-    Fp_init(&tmp_a20);
-    Fp_init(&tmp_b01);
-    Fp_init(&tmp_b12);
-    Fp_init(&tmp_b20);
-    Fp_init(&A3);
-    Fp_init(&A4);
-    Fp_init(&A5);
-    Fp_init(&tmp);
-    Fp3_init(&t_RES);
-    
-    Fp_mul(&A0,&A->a0,&B->a0);//A0=a0*b0
-    Fp_mul(&A1,&A->a1,&B->a1);//A1=a1*b1
-    Fp_mul(&A2,&A->a2,&B->a2);//A2=a2*b2
-    
-    Fp_add(&tmp_a01,&A->a0,&A->a1);//a0+a1
-    Fp_add(&tmp_a12,&A->a1,&A->a2);//a1+a2
-    Fp_add(&tmp_a20,&A->a0,&A->a2);//a2+a0
-    Fp_add(&tmp_b01,&B->a0,&B->a1);//b0+b1
-    Fp_add(&tmp_b12,&B->a1,&B->a2);//b1+b2
-    Fp_add(&tmp_b20,&B->a0,&B->a2);//b2+b0
-    
-    Fp_mul(&A3,&tmp_a01,&tmp_b01);//A3=(a0+a1)(b0+b1)
-    Fp_mul(&A4,&tmp_a12,&tmp_b12);//A4=(a1+a2)(b1+b2)
-    Fp_mul(&A5,&tmp_a20,&tmp_b20);//A5=(a2+a0)(b2+b0)
-    
-    //(a0,a1,a2)*(b0,b1,b2)=(a0b0 + ai((a1+a2)(b1+b2)-a1b1-a2b2), aia2b2+(a0+a1)(b0+b1)-a0b0-a1b1, a1b1+(a0+a2)(b0+b2)-a0b0-a2b2)
-    
-    //t1 = A3 −A1 −A0
-    //t2 = A4−A2−A0+A1
-    //t3 = A5 −A1 −A2
-    //ab = (t0 + c1t3) + (t1 + c1t4)ω + t2ω2.
-    Fp_sub(&A4,&A4,&A1);//A4-A1
-    Fp_sub(&A4,&A4,&A2);//A4-A2-A1        /(a1+a2)(b1+b2)-a1b1-a2b2
-    Fp_mul_ui(&tmp,&A4,C1);
-    Fp_add(&t_RES.a0,&A0,&tmp);
-    
-    Fp_sub(&A3,&A3,&A0);//A3-A0
-    Fp_sub(&A3,&A3,&A1);//t1 = A3-A1-A0
-    Fp_mul_ui(&tmp,&A2,C1);//A2*C1
-    Fp_add(&t_RES.a1,&tmp,&A3);
-    
-    Fp_sub(&A5,&A5,&A0);//A5-A0
-    Fp_sub(&A5,&A5,&A2);//A5-A2-A0
-    Fp_add(&t_RES.a2,&A1,&A5);//A5-A2-A0 + A1;;t2 = A4−A2−A0+A1
-    
-    Fp3_set(RES,&t_RES);
-    
-    Fp_clear(&A0);
-    Fp_clear(&A1);
-    Fp_clear(&A2);
-    Fp_clear(&tmp_a01);
-    Fp_clear(&tmp_a12);
-    Fp_clear(&tmp_a20);
-    Fp_clear(&tmp_b01);
-    Fp_clear(&tmp_b12);
-    Fp_clear(&tmp_b20);
-    Fp_clear(&A3);
-    Fp_clear(&A4);
-    Fp_clear(&A5);
-    Fp_clear(&tmp);
 }
 void Fp3_mul(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
     //(a0,a1,a2)*(b0,b1,b2)=(x0y0+xi((a1+a2)(b1+b2)-a1b1-x2y2),xix2y2+(a0+a1)(b0+b1)-x0y0-a1b1,a1b1+(a0+a2)(b0+b2)-x0y0-x2y2)
@@ -684,9 +620,8 @@ void Fp3_mul_Fp(struct Fp3 *RES,struct Fp3 *A,struct Fp *B){
     Fp3_set(RES,&tmp);
     Fp3_clear(&tmp);
 }
-
-//a^−1 = n(a)^−1(a^q*a^q^2 ),
-void Fp3_frobenious_conjugate(struct Fp3 *RES,struct Fp3 *A){
+void Fp3_frobenius_map(struct Fp3 *RES,struct Fp3 *A){
+    //a^−1 = n(a)^−1(a^q*a^q^2 ),
     struct Fp3 t_RES;
     Fp3_init(&t_RES);
     
@@ -714,15 +649,18 @@ void Fp3_invert(struct Fp3 *RES, struct Fp3 *A){
     Fp3_init(&AqAqsq);
     Fp3_init(&t_norm);
     
-    Fp3_frobenious_conjugate(&Aq, A);
+    Fp3_frobenius_map(&Aq, A);
     Fp3_set(&t_Aq, &Aq);
-    Fp3_frobenious_conjugate(&Aqsq,&t_Aq);
+    Fp3_frobenius_map(&Aqsq,&t_Aq);
     Fp3_mul(&AqAqsq, &Aq, &Aqsq);
     Fp3_mul(&t_norm, &AqAqsq, A);
     
     struct Fp norm,T0;
     Fp_init(&norm);
     Fp_init(&T0);
+//    printf("Fp3 NORM = ");
+//    Fp3_printf(&t_norm);
+//    printf("\n\n");
     
     if (mpz_cmp_ui(t_norm.a1.x_0,0) != 0 || mpz_cmp_ui(t_norm.a2.x_0,0) != 0)
     {
@@ -746,58 +684,6 @@ void Fp3_invert(struct Fp3 *RES, struct Fp3 *A){
     Fp_clear(&T0);
     Fp_clear(&norm);
 }
-void Fp3_invert_prev(struct Fp3 *ANS, struct Fp3 *A){
-    struct Fp3 t_ans;
-    Fp3_init(&t_ans);
-    
-    struct Fp T0,T1,t0,t1,t2,t3;
-    Fp_init(&T0);
-    Fp_init(&T1);
-    Fp_init(&t0);
-    Fp_init(&t1);
-    Fp_init(&t2);
-    Fp_init(&t3);
-    
-    // An optimized version of Grewal's Algo. 3   (a,b,c)
-    Fp_mul(&T0,&A->a0,&A->a0);
-    Fp_mul_ui(&t0,&A->a1,C1);
-    
-    Fp_mul(&T1,&t0,&A->a2);
-    Fp_sub(&t1,&T0,&T1); // t1=(a^2-bci) mod q
-    
-    Fp_mul(&T0,&A->a2,&A->a2);
-    Fp_mul_ui(&T0,&T0,C1);
-    Fp_mul(&T1,&A->a0,&A->a1);
-    Fp_sub(&t2,&T0,&T1); // t2=(c^2i-ab) mod q
-    
-    Fp_mul(&T0,&A->a1,&A->a1);
-    Fp_mul(&T1,&A->a0,&A->a2);
-    Fp_sub(&t3,&T0,&T1); // t3=(b^2-ac) mod q
-    
-    Fp_mul(&T0,&t0,&t3);
-    Fp_mul(&T1,&A->a0,&t1);
-    Fp_add(&T0,&T0,&T1); // T0={bi(b^2-ac)+a(a^2-bci)} mod q
-    
-    Fp_mul_ui(&t0,&A->a2,C1);
-    Fp_mul(&T1,&t0,&t2);
-    Fp_add(&t0,&T0,&T1); // t0={ci(c^2i-ab)+{bi(b^2-ac)+a(a^2-bci)}} mod q .0
-    
-    mpz_invert(t0.x_0,t0.x_0,prime);
-    
-    Fp_mul(&t_ans.a0,&t1,&t0);
-    Fp_mul(&t_ans.a1,&t2,&t0);
-    Fp_mul(&t_ans.a2,&t3,&t0);
-    
-    Fp3_set(ANS,&t_ans);
-    
-    Fp3_clear(&t_ans);
-    Fp_clear(&T0);
-    Fp_clear(&T1);
-    Fp_clear(&t0);
-    Fp_clear(&t1);
-    Fp_clear(&t2);
-    Fp_clear(&t3);
-}
 void Fp3_div(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
     struct Fp3 tmp,t_RES;
     Fp3_init(&tmp);
@@ -813,9 +699,9 @@ void Fp3_div(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
 }
 void Fp3_pow(struct Fp3 *RES,struct Fp3 *A,mpz_t B){
     int i;
-    int r;//bit数
+    int r;
     r= (int)mpz_sizeinbase(B,2);
-    //    printf("r= %d\n",r);
+//    printf("r= %d\n",r);
     
     struct Fp3 res_tmp;
     Fp3_init(&res_tmp);
@@ -1013,41 +899,6 @@ void Fp6_sub(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B){
     Fp6_set(RES,&tmp);
     Fp6_clear(&tmp);
 }
-void Fp6_mul_prev(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B){
-    //x^2-c2=0;c2=-1
-    //= (a0b0 + c2a1b1) + (a0 + a1)(b0 + b1)τ−(a0b0)τ − (a1b1)τ.
-    struct Fp3 tmp1,tmp2,tmp3,tmp4,tmp5,tmp6;
-    Fp3_init(&tmp1);
-    Fp3_init(&tmp2);
-    Fp3_init(&tmp3);
-    Fp3_init(&tmp4);
-    Fp3_init(&tmp5);
-    Fp3_init(&tmp6);
-    
-    struct Fp6 t_RES;
-    Fp6_init(&t_RES);
-    
-    Fp3_mul(&tmp1,&A->a0,&B->a0);//a0*b0
-    Fp3_mul(&tmp2,&A->a1,&B->a1);//a1*b1
-    Fp3_mul_omega(&tmp3,&tmp2);//c2*a1*b1
-    //    Fp3_mul_omega(&tmp3,&tmp2);
-    Fp3_add(&t_RES.a0,&tmp1,&tmp3);//a*c+b*d*v
-    Fp3_add(&tmp4,&A->a0,&A->a1);//a+b
-    Fp3_add(&tmp5,&B->a0,&B->a1);//c+d
-    Fp3_mul(&tmp6,&tmp4,&tmp5);//(a+b)(c+d)
-    Fp3_sub(&t_RES.a1,&tmp6,&tmp1);
-    Fp3_sub(&t_RES.a1,&t_RES.a1,&tmp2);
-    
-    Fp6_set(RES,&t_RES);
-    
-    Fp3_clear(&tmp1);
-    Fp3_clear(&tmp2);
-    Fp3_clear(&tmp3);
-    Fp3_clear(&tmp4);
-    Fp3_clear(&tmp5);
-    Fp3_clear(&tmp6);
-    Fp6_clear(&t_RES);
-}
 void Fp6_mul(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B){
     //x^2-c2=0;c2=-1
     //mn= (a0b0 + c2a1b1) + (a0 + a1)(b0 + b1)τ−(a0b0)τ − (a1b1)τ.
@@ -1146,6 +997,9 @@ void Fp6_invert(struct Fp6 *RES, struct Fp6 *A){
     Fp3_mul(&a,&A->a0,&A->a0); // a=a0^2
     Fp3_mul(&b,&A->a1,&A->a1); // b=a1^2
     Fp3_add(&norm,&a,&b);
+//    Fp_printf(&norm.a0);
+//    Fp_printf(&norm.a1);
+//    Fp_printf(&norm.a2);
     Fp3_invert(&norm,&norm);
     
     //m^−1 = n(m)^−1(m^q^3 )
@@ -1155,37 +1009,6 @@ void Fp6_invert(struct Fp6 *RES, struct Fp6 *A){
     Fp6_set(RES,&tmp);
     
     Fp3_clear(&norm);
-    Fp3_clear(&a);
-    Fp3_clear(&b);
-    Fp6_clear(&tmp);
-}
-void Fp6_invert_prev(struct Fp6 *ANS, struct Fp6 *A){
-    struct Fp6 tmp;
-    Fp6_init(&tmp);
-    
-    // tmp=A^(q^6)=(x0,-x1)
-    Fp3_set(&tmp.a0,&A->a0);
-    Fp3_neg(&tmp.a1,&A->a1);
-    
-    struct Fp3 c,a,b;
-    Fp3_init(&c);
-    Fp3_init(&a);
-    Fp3_init(&b);
-    
-    Fp3_mul(&a,&A->a0,&A->a0); // a=x0^2
-    Fp3_mul(&b,&A->a1,&A->a1); // b=x1^2
-    Fp3_mul_omega(&b,&b); // b=x1^2*v
-    Fp3_sub(&c,&a,&b); // c=x0^2-x1^2*v mod q
-    
-    Fp3_invert(&c,&c);
-    
-    // ANS=A^{-1}=(c)^{-1}*A^(p^6) A which c is Fp6-element and tmp is a vector A Fp6
-    Fp3_mul(&tmp.a0,&tmp.a0,&c);
-    Fp3_mul(&tmp.a1,&tmp.a1,&c);
-    
-    Fp6_set(ANS,&tmp);
-    
-    Fp3_clear(&c);
     Fp3_clear(&a);
     Fp3_clear(&b);
     Fp6_clear(&tmp);
@@ -1206,19 +1029,27 @@ void Fp6_div(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B){
 void Fp6_pow(struct Fp6 *RES,struct Fp6 *A,mpz_t B){
     int i,length;
     length= (int)mpz_sizeinbase(B,2);
-    char B_binary[length];
-    mpz_get_str(B_binary,2,B);
-    struct Fp6 tmp;
-    Fp6_init(&tmp);
-    Fp6_set(&tmp,A);
-    for(i=1;B_binary[i]!='\0';i++){
-        Fp6_mul(&tmp,&tmp,&tmp);
-        if(B_binary[i]=='1'){
-            Fp6_mul(&tmp,&tmp,A);
+    
+    struct Fp6 res_tmp;
+    Fp6_init(&res_tmp);
+    Fp6_set(&res_tmp,A);
+    
+    struct Fp6 in_tmp;
+    Fp6_init(&in_tmp);
+    Fp6_set(&in_tmp,A);
+    
+    for(i=length-2;i>=0;i--){
+        if(mpz_tstbit(B,i)==1){
+            Fp6_mul(&res_tmp,&res_tmp,&res_tmp);//a*2
+            Fp6_mul(&res_tmp,&res_tmp,&in_tmp);//*a
+        }else{
+            Fp6_mul(&res_tmp,&res_tmp,&res_tmp);//a*2
         }
     }
-    Fp6_set(RES,&tmp);
-    Fp6_clear(&tmp);
+    
+    Fp6_set(RES,&res_tmp);
+    Fp6_clear(&res_tmp);
+    Fp6_clear(&in_tmp);
 }
 void Fp6_sqrt(struct Fp6 *RES,struct Fp6 *A){
     struct Fp6 n,y,x,b,t,tmp_Fp6;
@@ -1498,73 +1329,17 @@ void Fp18_mul_Fp(struct Fp18 *RES,struct Fp18 *A,struct Fp *B){
     Fp18_set(RES,&tmp);
     Fp18_clear(&tmp);
 }
-void Fp18_invert_prev(struct Fp18 *RES, struct Fp18 *A){
+void Fp18_frobenius_map(struct Fp18 *RES,struct Fp18 *A){
     struct Fp18 t_RES;
     Fp18_init(&t_RES);
-    
-    struct Fp6 T0,T1,t0,t1,t2,t3;
-    Fp6_init(&T0);
-    Fp6_init(&T1);
-    Fp6_init(&t0);
-    Fp6_init(&t1);
-    Fp6_init(&t2);
-    Fp6_init(&t3);
-    
-    // An optimized version of Grewal's Algo. 3   (a,b,c)
-    Fp6_mul(&T0,&A->m0,&A->m0);
-    Fp6_mul_tau(&t0,&A->m1);//TODO
-    
-    Fp6_mul(&T1,&t0,&A->m2);
-    Fp6_sub(&t1,&T0,&T1); // t1=(a^2-bci) mod q
-    
-    Fp6_mul(&T0,&A->m2,&A->m2);
-    Fp6_mul_tau(&T0,&T0);
-    Fp6_mul(&T1,&A->m0,&A->m1);
-    Fp6_sub(&t2,&T0,&T1); // t2=(c^2i-ab) mod q
-    
-    Fp6_mul(&T0,&A->m1,&A->m1);
-    Fp6_mul(&T1,&A->m0,&A->m2);
-    Fp6_sub(&t3,&T0,&T1); // t3=(b^2-ac) mod q
-    
-    Fp6_mul(&T0,&t0,&t3);
-    Fp6_mul(&T1,&A->m0,&t1);
-    Fp6_add(&T0,&T0,&T1); // T0={bi(b^2-ac)+a(a^2-bci)} mod q
-    
-    Fp6_mul_tau(&t0,&A->m2);
-    Fp6_mul(&T1,&t0,&t2);
-    Fp6_add(&t0,&T0,&T1); // t0={ci(c^2i-ab)+{bi(b^2-ac)+a(a^2-bci)}} mod q .0
-    
-    Fp6_invert(&t0,&t0);
-    
-    Fp6_mul(&t_RES.m0,&t1,&t0);
-    Fp6_mul(&t_RES.m1,&t2,&t0);
-    Fp6_mul(&t_RES.m2,&t3,&t0);
-    
-    Fp18_set(RES,&t_RES);
-    
-    Fp18_clear(&t_RES);
-    Fp6_clear(&T0);
-    Fp6_clear(&T1);
-    Fp6_clear(&t0);
-    Fp6_clear(&t1);
-    Fp6_clear(&t2);
-    Fp6_clear(&t3);
-}
-void Fp18_frobenious_conjugate(struct Fp18 *RES,struct Fp18 *A){
-    //a^−1 = n(a)^−1(a^q*a^q^2 )
-    struct Fp18 t_RES;
-    Fp18_init(&t_RES);
-    
     struct Fp tmp;
     Fp_init(&tmp);
-    Fp_set_mpz(&tmp, c1_omega);
-    
+    Fp_set_mpz(&tmp,c1_omega);
     
     Fp6_set(&t_RES.m0, &A->m0);
     Fp6_mul_Fp(&t_RES.m1, &A->m1, &tmp);
     Fp_set_mpz(&tmp, c1_omega_bar);
     Fp6_mul_Fp(&t_RES.m2, &A->m2, &tmp);
-    
     
     Fp18_set(RES,&t_RES);
     Fp18_clear(&t_RES);
@@ -1579,13 +1354,17 @@ void Fp18_invert(struct Fp18 *RES, struct Fp18 *A){
     Fp18_init(&AqAqsq);
     Fp18_init(&t_norm);
     
-    Fp18_frobenious_conjugate(&Aq, A);
+    Fp18_frobenius_map(&Aq, A);
     Fp18_set(&t_Aq, &Aq);
-    Fp18_frobenious_conjugate(&Aqsq,&t_Aq);
+    Fp18_frobenius_map(&Aqsq,&t_Aq);
     Fp18_mul(&AqAqsq, &Aq, &Aqsq);
     Fp18_mul(&t_norm, &AqAqsq, A);
     
+    printf("Fp18 Norm = \n");
     Fp18_printf(&t_norm);
+    //    printf("M2 \n");
+    //    //    printf("SIZE %d\n",(int)mpz_sizeinbase(t_norm.m1.a0.a0.x_0,2));
+    //    Fp6_printf(&t_norm.m2);
     
     struct Fp6 norm,T0;
     Fp6_init(&norm);
@@ -1805,12 +1584,12 @@ void EFp_clear(struct EFp *A){
 void EFp_printf(struct EFp *A){
     gmp_printf("(%Zd,%Zd)\n",A->px.x_0,A->py.x_0);
 }
-void EFp_SCM(struct EFp *RES, struct EFp *P,mpz_t j){
+void EFp_SCM(struct EFp *RES, struct EFp *P,mpz_t scalar){
     int i,length;
-    length= (int)mpz_sizeinbase(j,2);
+    length= (int)mpz_sizeinbase(scalar,2);
     // int eca=0,ecd=0;
     char r_binary[length];
-    mpz_get_str(r_binary,2,j);
+    mpz_get_str(r_binary,2,scalar);
     struct EFp Q,R;
     EFp_init(&Q);
     EFp_set(&Q,P);
@@ -1871,21 +1650,21 @@ void EFp_ECD(struct EFp *RES, struct EFp *P){
     Fp_clear(&tmp);
     EFp_clear(&t_RES);
 }
-void EFp_ECA(struct EFp *RES, struct EFp *P1, struct EFp *P2){
-    if(P2->isInfinity==TRUE){//if P2==inf
-        EFp_set(RES,P1);
+void EFp_ECA(struct EFp *RES, struct EFp *P, struct EFp *Q){
+    if(Q->isInfinity==TRUE){//if P2==inf
+        EFp_set(RES,P);
         return;
     }
-    else if(P1->isInfinity==TRUE){//if P1==inf
-        EFp_set(RES,P2);
+    else if(P->isInfinity==TRUE){//if P1==inf
+        EFp_set(RES,Q);
         return;
     }
-    else if(Fp_cmp(&P1->px,&P2->px)==0&&Fp_cmp(&P1->py,&P2->py)==1){ //P1.x==P2.x&&P1.y!=P2.y
+    else if(Fp_cmp(&P->px,&Q->px)==0&&Fp_cmp(&P->py,&Q->py)==1){ //P1.x==P2.x&&P1.y!=P2.y
         EFp_set_infity(RES);
         return;
     }
-    else if(EFp_cmp(P1,P2)==0){ // P=Q
-        EFp_ECD(RES,P1);
+    else if(EFp_cmp(P,Q)==0){ // P=Q
+        EFp_ECD(RES,P);
         return;
     }
     
@@ -1898,16 +1677,16 @@ void EFp_ECA(struct EFp *RES, struct EFp *P1, struct EFp *P2){
     Fp_init(&tmp);
     EFp_init(&t_RES);
     
-    Fp_sub(&x,&P2->px,&P1->px);
-    Fp_sub(&y,&P2->py,&P1->py);
+    Fp_sub(&x,&Q->px,&P->px);
+    Fp_sub(&y,&Q->py,&P->py);
     Fp_div(&lambda,&y,&x);
     Fp_mul(&tmp,&lambda,&lambda);
-    Fp_add(&x,&P1->px,&P2->px);
+    Fp_add(&x,&P->px,&Q->px);
     Fp_sub(&x,&tmp,&x);
-    Fp_sub(&tmp,&P1->px,&x);
+    Fp_sub(&tmp,&P->px,&x);
     Fp_set(&t_RES.px,&x);
     Fp_mul(&tmp,&tmp,&lambda);
-    Fp_sub(&t_RES.py,&tmp,&P1->py);
+    Fp_sub(&t_RES.py,&tmp,&P->py);
     
     EFp_set(RES,&t_RES);
     
@@ -1922,67 +1701,6 @@ int EFp_cmp(struct EFp *A,struct EFp *B){
         return 0;
     }
     return 1;
-}
-void EFp_random_set(struct EFp *RES){
-    struct Fp a,x;
-    Fp_init(&a);
-    Fp_init(&x);
-    
-    struct EFp P,Q;
-    EFp_init(&P);
-    EFp_init(&Q);
-    
-    mpz_t r_div_2;
-    mpz_init(r_div_2);
-    mpz_div_ui(r_div_2,r_order,2);
-    // gmp_printf("%Zd\n",r_div_2);
-    do{
-        do{
-            Fp_random(&x);
-            Fp_mul(&a,&x,&x);
-            Fp_mul(&a,&a,&x);
-            mpz_add(a.x_0,a.x_0,b);
-        }while(mpz_legendre(a.x_0,prime)!=1);
-        Q.isInfinity=0;
-        Fp_sqrt(&P.py,&a);
-        Fp_set(&P.px,&x);
-        
-        EFp_SCM(&Q,&P,r_div_2);
-        // EFp_SCM(&P,&P,p2);
-        // printf("%d\n",Q.infity);
-    }while(Q.isInfinity==TRUE);
-    EFp_set(RES,&P);
-    
-    
-    Fp_clear(&a);
-    Fp_clear(&x);
-    EFp_clear(&P);
-    // // int legendle;
-    // struct EFp P;
-    // EFp_init(&P);
-    
-    // struct Fp x,a;
-    // Fp_init(&a);
-    
-    // Fp_init(&x);
-    // mpz_t set_3;
-    // mpz_init(set_3);
-    // mpz_set_ui(set_3,3);
-    
-    // do{
-    // 	Fp_random(&x);
-    // 	Fp_pow(&a,&x,set_3);
-    // 	mpz_add(a.a0,a.a0,b);
-    // }while(mpz_legendre(a.a0,p)!=1);
-    
-    // Fp_sqrt(&P.y,&a);
-    // Fp_set(&P.x,&x);
-    // EFp_set(RES,&P);
-    
-    // EFp_clear(&P);
-    // Fp_clear(&a);
-    // Fp_clear(&x);
-    // mpz_clear(set_3);
 }
 
 #pragma mark **EFp3** method implementations
@@ -2050,21 +1768,21 @@ void EFp3_ECD(struct EFp3 *RES, struct EFp3 *P){
     Fp3_clear(&tmp);
     EFp3_clear(&t_RES);
 }
-void EFp3_ECA(struct EFp3 *RES, struct EFp3 *P1, struct EFp3 *P2){
-    if(P2->isInfinity==TRUE){//if P2==inf
-        EFp3_set(RES,P1);
+void EFp3_ECA(struct EFp3 *RES, struct EFp3 *P, struct EFp3 *Q){
+    if(Q->isInfinity==TRUE){//if P2==inf
+        EFp3_set(RES,P);
         return;
     }
-    else if(P1->isInfinity==TRUE){//if P1==inf
-        EFp3_set(RES,P2);
+    else if(P->isInfinity==TRUE){//if P1==inf
+        EFp3_set(RES,Q);
         return;
     }
-    else if(Fp3_cmp(&P1->p3x,&P2->p3x)==0&&Fp3_cmp(&P1->p3y,&P2->p3y)==1){ //P1.x==P2.x&&P1.y!=P2.y
+    else if(Fp3_cmp(&P->p3x,&Q->p3x)==0&&Fp3_cmp(&P->p3y,&Q->p3y)==1){ //P1.x==P2.x&&P1.y!=P2.y
         EFp3_set_infity(RES);
         return;
     }
-    else if(EFp3_cmp(P1,P2)==0){ // P=Q
-        EFp3_ECD(RES,P1);
+    else if(EFp3_cmp(P,Q)==0){ // P=Q
+        EFp3_ECD(RES,P);
         return;
     }
     
@@ -2077,16 +1795,16 @@ void EFp3_ECA(struct EFp3 *RES, struct EFp3 *P1, struct EFp3 *P2){
     Fp3_init(&tmp);
     EFp3_init(&t_RES);
     
-    Fp3_sub(&x,&P2->p3x,&P1->p3x);
-    Fp3_sub(&y,&P2->p3y,&P1->p3y);
+    Fp3_sub(&x,&Q->p3x,&P->p3x);
+    Fp3_sub(&y,&Q->p3y,&P->p3y);
     Fp3_div(&lambda,&y,&x);
     Fp3_mul(&tmp,&lambda,&lambda);
-    Fp3_add(&x,&P1->p3x,&P2->p3x);
+    Fp3_add(&x,&P->p3x,&Q->p3x);
     Fp3_sub(&x,&tmp,&x);
-    Fp3_sub(&tmp,&P1->p3x,&x);
+    Fp3_sub(&tmp,&P->p3x,&x);
     Fp3_set(&t_RES.p3x,&x);
     Fp3_mul(&tmp,&tmp,&lambda);
-    Fp3_sub(&t_RES.p3y,&tmp,&P1->p3y);
+    Fp3_sub(&t_RES.p3y,&tmp,&P->p3y);
     
     EFp3_set(RES,&t_RES);
     
@@ -2096,12 +1814,12 @@ void EFp3_ECA(struct EFp3 *RES, struct EFp3 *P1, struct EFp3 *P2){
     Fp3_clear(&tmp);
     EFp3_clear(&t_RES);
 }
-void EFp3_SCM(struct EFp3 *RES, struct EFp3 *P, mpz_t j){
+void EFp3_SCM(struct EFp3 *RES, struct EFp3 *P, mpz_t scalar){
     int i,length;
-    length= (int)mpz_sizeinbase(j,2);
+    length= (int)mpz_sizeinbase(scalar,2);
     char r_binary[length];
     // printf("%d\n",length);
-    mpz_get_str(r_binary,2,j);
+    mpz_get_str(r_binary,2,scalar);
     struct EFp3 Q,R;
     EFp3_init(&Q);
     EFp3_set(&Q,P);
@@ -2131,55 +1849,6 @@ void EFp3_set_EFp(struct EFp3 *A,struct EFp *B){
     Fp_set(&A->p3x.a0,&B->px);
     Fp_set(&A->p3y.a0,&B->py);
     A->isInfinity=B->isInfinity;
-}
-void EFp3_random_set(struct EFp3 *RES){
-    struct Fp3 a,x;
-    Fp3_init(&a);
-    Fp3_init(&x);
-    
-    struct EFp3 P,Q;
-    EFp3_init(&P);
-    EFp3_init(&Q);
-    
-    mpz_t p3,t3,r3,tmp;
-    mpz_init(p3);
-    mpz_init(t3);
-    mpz_init(r3);
-    mpz_init(tmp);
-    
-    mpz_mul(p3,prime,prime);
-    mpz_mul(p3,p3,prime);//p3=p^3
-    
-    mpz_mul(t3,t_trace,t_trace);
-    mpz_mul(t3,t3,t_trace);//t3=t^3
-    
-    mpz_mul(tmp,t_trace,prime);
-    mpz_mul_ui(tmp,tmp,3);//tmp=3tp
-    
-    mpz_sub(r3,p3,t3);//r3=p3-t3
-    mpz_add(r3,r3,tmp);//r3=p3-t3+3tp
-    mpz_add_ui(r3,r3,1);//r3=p3-t3+3tp+1
-    
-    mpz_tdiv_q(r3,r3,r_order);
-    mpz_tdiv_q(r3,r3,r_order);
-    do{
-        Fp3_random(&x);
-        Fp3_mul(&a,&x,&x);
-        Fp3_mul(&a,&a,&x);
-        mpz_add(a.a0.x_0,a.a0.x_0,b);
-    }while(Fp3_legendre(&a)!=1);
-    P.isInfinity=FALSE;
-    Fp3_sqrt(&P.p3y,&a);
-    Fp3_set(&P.p3x,&x);
-    
-    EFp3_SCM(&P,&P,r3);
-    EFp3_set(RES,&P);
-    
-    
-    Fp3_clear(&a);
-    Fp3_clear(&x);
-    EFp3_clear(&P);
-    mpz_clear(p3);
 }
 void EFp3_neg(struct EFp3 *RES, struct EFp3 *A){
     struct EFp3 tmp;
@@ -2304,11 +1973,11 @@ void EFp6_ECA(struct EFp6 *RES, struct EFp6 *P1, struct EFp6 *P2){
     Fp6_clear(&tmp);
     EFp6_clear(&t_RES);
 }
-void EFp6_SCM(struct EFp6 *RES,struct EFp6 *P,mpz_t j){
+void EFp6_SCM(struct EFp6 *RES,struct EFp6 *P,mpz_t S){
     int i,length;
-    length= (int)mpz_sizeinbase(j,2);
+    length= (int)mpz_sizeinbase(S,2);
     char j_binary[length];
-    mpz_get_str(j_binary,2,j);
+    mpz_get_str(j_binary,2,S);
     struct EFp6 Q,R;
     EFp6_init(&Q);
     EFp6_set(&Q,P);
@@ -2330,68 +1999,6 @@ int EFp6_cmp(struct EFp6 *A,struct EFp6 *B){
         return 0;
     }
     return 1;
-}
-void EFp6_random_set(struct EFp6 *RES){
-    struct EFp6 P;
-    EFp6_init(&P);
-    
-    struct Fp6 x,a;
-    Fp6_init(&a);
-    Fp6_init(&x);
-    
-    //t12=a^12+b^12={(t^3-3pt)^2-2p^3}^2-2p^6
-    mpz_t tmp1,tmp2,p_pow;
-    mpz_t r6,t6;
-    mpz_init(tmp1);
-    mpz_init(tmp2);
-    mpz_init(p_pow);
-    mpz_init(r6);
-    mpz_init(t6);
-    
-    mpz_pow_ui(tmp1,t_trace,3);
-    mpz_mul(p_pow,prime,t_trace);
-    mpz_mul_ui(p_pow,p_pow,3);
-    mpz_sub(tmp1,tmp1,p_pow);
-    mpz_mul(tmp1,tmp1,tmp1);
-    
-    mpz_pow_ui(p_pow,prime,3);
-    mpz_mul_ui(tmp2,p_pow,2);
-    mpz_sub(t6,tmp1,tmp2);
-    // mpz_pow_ui(tmp1,tmp1,2);
-    
-    mpz_pow_ui(p_pow,p_pow,2);
-    // mpz_mul_ui(tmp2,p_pow,2);
-    // mpz_sub(t6,tmp1,tmp2);
-    
-    // mpz_pow_ui(p_pow,p_pow,2);
-    mpz_add_ui(tmp1,p_pow,1);
-    mpz_sub(r6,tmp1,t6);
-    
-    do{
-        Fp6_random(&x);
-        Fp6_mul(&a,&x,&x);
-        Fp6_mul(&a,&a,&x);
-        mpz_add(a.a0.a0.x_0,a.a0.a0.x_0,b);
-    }while(Fp6_legendre(&a)!=1);
-    Fp6_sqrt(&P.p6y,&a);
-    Fp6_set(&P.p6x,&x);
-    
-    mpz_t r6_div_r2;
-    mpz_init(r6_div_r2);
-    mpz_div(r6_div_r2,r6,r_order);
-    mpz_div(r6_div_r2,r6_div_r2,r_order);
-    
-    EFp6_SCM(RES,&P,r6_div_r2);
-    
-    EFp6_clear(&P);
-    Fp6_clear(&a);
-    Fp6_clear(&x);
-    mpz_clear(tmp1);
-    mpz_clear(tmp2);
-    mpz_clear(p_pow);
-    mpz_clear(r6);
-    mpz_clear(t6);
-    mpz_clear(r6_div_r2);
 }
 
 #pragma mark **EFp18** method implementations
@@ -2538,74 +2145,6 @@ int EFp18_cmp(struct EFp18 *A,struct EFp18 *B){
     }
     return 1;
 }
-void EFp18_random_set(struct EFp18 *RES){
-    struct EFp18 P;
-    EFp18_init(&P);
-    
-    struct Fp18 x,a;
-    Fp18_init(&a);
-    Fp18_init(&x);
-    
-    //t18=a^18+b^18={(t^3-3pt)^3-3p^3(t^3-3pt)}^2-2p^9
-    mpz_t tmp1,tmp2,tmp3,t_RES,t18,r18;
-    mpz_init(tmp1);
-    mpz_init(tmp2);
-    mpz_init(tmp3);
-    mpz_init(t_RES);
-    mpz_init(t18);
-    mpz_init(r18);
-    
-    mpz_mul(tmp1,prime,t_trace);
-    mpz_mul_ui(tmp1,tmp1,3);
-    
-    mpz_mul(tmp2,t_trace,t_trace);
-    mpz_mul(tmp2,tmp2,t_trace);
-    
-    mpz_sub(tmp1,tmp2,tmp1);//tmp1=t^3-3pt
-    
-    mpz_mul(t_RES,tmp1,tmp1);
-    mpz_mul(t_RES,t_RES,tmp1);//t_RES=(t^3-3pt)^3
-    
-    mpz_mul(tmp2,prime,prime);
-    mpz_mul(tmp2,tmp2,prime);//tmp2=p^3
-    
-    mpz_mul(tmp3,tmp1,tmp2);
-    mpz_mul_ui(tmp3,tmp3,3);//tmp3=3p^3(t^3-3pt)
-    
-    mpz_sub(t_RES,t_RES,tmp3);//t_RES=(t^3-3pt)^3-3p^3(t^3-3pt)
-    mpz_mul(t_RES,t_RES,t_RES);//t_RES=t_RES^2
-    
-    mpz_pow_ui(tmp2,tmp2,3);//tmp2=p^9
-    mpz_add(tmp3,tmp2,tmp2);//tmp3=2*tmp2
-    
-    mpz_sub(t18,t_RES,tmp3);//t18=t_RES-tmp3
-    
-    mpz_mul(tmp3,tmp2,tmp2);//tmp3=p^18
-    
-    mpz_add_ui(tmp3,tmp3,1);
-    mpz_sub(r18,tmp3,t18);
-    mpz_div(r18,r18,r_order);
-    mpz_div(r18,r18,r_order);
-    
-    do{
-        Fp18_random(&x);
-        Fp18_mul(&a,&x,&x);
-        Fp18_mul(&a,&a,&x);
-        mpz_add(a.m0.a0.a0.x_0,a.m0.a0.a0.x_0,b);
-    }while(Fp18_legendre(&a)!=1);
-    Fp18_sqrt(&P.p18y,&a);
-    Fp18_set(&P.p18x,&x);
-    
-    EFp18_SCM(RES,&P,r18);
-    
-    EFp18_clear(&P);
-    Fp18_clear(&a);
-    Fp18_clear(&x);
-    
-    mpz_clear(tmp1);
-    mpz_clear(tmp2);
-    mpz_clear(t18);
-}
 void EFp18_set_EFp(struct EFp18 *A,struct EFp *B){
     Fp18_set_ui(&A->p18x,0);
     Fp18_set_ui(&A->p18y,0);
@@ -2614,37 +2153,7 @@ void EFp18_set_EFp(struct EFp18 *A,struct EFp *B){
     Fp_set(&A->p18y.m0.a0.a0,&B->py);
     A->isInfinity=B->isInfinity;
 }
-void EFp18_frobenius_map(struct EFp18 *RES,struct EFp18 *A){
-    struct EFp18 tmp;
-    EFp18_init(&tmp);
-    
-    Fp18_pow(&tmp.p18x,&A->p18x,prime);
-    Fp18_pow(&tmp.p18y,&A->p18y,prime);
-    
-    EFp18_set(RES,&tmp);
-    
-    EFp18_clear(&tmp);
-}
-void EFp18_random_set_for_Ate(struct EFp18 *RES){
-    struct EFp18 P,P_frobenius,tmp_EFp18;
-    EFp18_init(&P);
-    EFp18_init(&P_frobenius);
-    EFp18_init(&tmp_EFp18);
-    
-    EFp18_random_set(&P);
-    
-    EFp18_frobenius_map(&P_frobenius,&P);
-    Fp18_neg(&tmp_EFp18.p18y,&P.p18y);
-    Fp18_set(&tmp_EFp18.p18x,&P.p18x);
-    
-    EFp18_ECA(&tmp_EFp18,&tmp_EFp18,&P_frobenius);
-    
-    EFp18_set(RES,&tmp_EFp18);
-    
-    EFp18_clear(&P);
-    EFp18_clear(&P_frobenius);
-    EFp18_clear(&tmp_EFp18);
-}
+
 
 #pragma mark Parameters method implementations
 void generate_parameters(void){
@@ -2695,6 +2204,7 @@ void generate_parameters(void){
     mpz_add(r_tmp,tmp1,tmp2);
     mpz_set(r_order,r_tmp);
     
+CHECK_PRIME:
     //r = p+1-t
     mpz_add_ui(r_order_EFp,prime,1);
     mpz_sub(r_order_EFp,r_order_EFp,t_trace);
@@ -2706,120 +2216,102 @@ void generate_parameters(void){
     mpz_cdiv_r_ui(tmp1,p_m1,3);
     unsigned long r = mpz_get_ui(tmp1);
     
-CHECK_PRIME:if(mpz_probab_prime_p(prime,25)==1 && m4 == 3 && r == 0){
-    
-    mpz_set(p_tmp,prime);
-    mpz_t prime_m1,p_m1_d3,c2_tmp;
-    mpz_init(prime_m1);
-    mpz_init(c2_tmp);
-    mpz_init(p_m1_d3);
-    
-    mpz_set_ui(c1_leg,C1);
-    mpz_set_ui(c2_tmp,C2);
-    
-    mpz_sub_ui(prime_m1,p_tmp,1);
-    mpz_cdiv_q_ui(p_m1_d3,prime_m1,3);
-    mpz_powm(c1_leg,c1_leg,p_m1_d3,p_tmp);
-    mpz_powm_ui(c1_leg_bar,c1_leg,2,p_tmp);
-    //    gmp_printf("C1=%Zd,\n C1^2=%Zd\n",c1_leg,c1_leg_bar);
-    
-    mpz_t p6_m1,q_p_m1_d9;
-    mpz_init(p6_m1);
-    mpz_init(q_p_m1_d9);
-    
-    mpz_set_ui(c1_omega,C1);
-    
-    mpz_pow_ui(p6_m1,p_tmp,6);
-    mpz_sub_ui(p6_m1,p6_m1,1);
-    mpz_mod(p6_m1,p6_m1,p_tmp);
-    mpz_cdiv_q_ui(q_p_m1_d9,p6_m1,9);
-    mpz_powm(c1_omega,c1_omega,q_p_m1_d9,p_tmp);
-    mpz_powm_ui(c1_omega_bar,c1_omega,2,p_tmp);
-    //    gmp_printf("C1_omg=%Zd,\n C1_omg^2=%Zd\n",c1_omega,c1_omega_bar);
-    
-    int leg = mpz_legendre(c2_tmp,p_tmp);
-    
-    mpz_clear(prime_m1);
-    mpz_clear(p_m1_d3);
-    mpz_clear(p6_m1);
-    mpz_clear(q_p_m1_d9);
-    
-    if ((mpz_cmp_ui(c1_leg,0) != 0 &&  mpz_cmp_ui(c1_leg,1) != 0) && leg == -1)
-    {
-        gmp_printf("%Zd\n",X);
-        mpz_set(prime,p_tmp);
-        gmp_printf("p:%Zd\n",p_tmp);
-        printf("p = %dbit\n\n\n",(int)mpz_sizeinbase(p_tmp,2));
-    }
-}
-else
-{
-    //p=1/21(x^8+5x^7+7x^6+37x^5+188x^4+259x^3+343x^2+1763x+2401)
-    mpz_mul_ui(tmp1,xpow7,5);
-    mpz_add(p_tmp,tmp1,xpow8);
-    mpz_mul_ui(tmp1,xpow6,7);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow5,37);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow4,188);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow3,259);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,xpow2,343);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_mul_ui(tmp1,X,1763);
-    mpz_add(p_tmp,tmp1,p_tmp);
-    mpz_add_ui(p_tmp,p_tmp,2401);
-    
-    mpz_div_ui(prime,p_tmp,21);
-    
-    if(mpz_probab_prime_p(prime,25)==0){
-        gmp_printf("p:%Zd\n",prime);
-        printf("not  prime number!\n");
-        exit(0);
+    if(mpz_probab_prime_p(prime,25) >=0 && m4 == 3 && r == 0){
+        
+        mpz_set(p_tmp,prime);
+        mpz_t prime_m1,p_m1_d3,c2_tmp;
+        mpz_init(prime_m1);
+        mpz_init(c2_tmp);
+        mpz_init(p_m1_d3);
+        
+        mpz_set_ui(c1_leg,C1);
+        mpz_set_ui(c2_tmp,C2);
+        
+        mpz_sub_ui(prime_m1,p_tmp,1);
+        mpz_cdiv_q_ui(p_m1_d3,prime_m1,3);
+        mpz_powm(c1_leg,c1_leg,p_m1_d3,p_tmp);
+        mpz_powm_ui(c1_leg_bar,c1_leg,2,p_tmp);
+//        printf("c1_leg = %dbit \n",(int)mpz_sizeinbase(c1_leg,2));
+//        gmp_printf("C1 = %Zd,\nC1^2 = %Zd\n",c1_leg,c1_leg_bar);
+        
+        mpz_t p6_m1,q_p_m1_d9;
+        mpz_init(p6_m1);
+        mpz_init(q_p_m1_d9);
+        
+        mpz_set_ui(c1_omega,C1);
+        
+        mpz_pow_ui(p6_m1,p_tmp,6);
+        mpz_sub_ui(p6_m1,p6_m1,1);
+        //        mpz_mod(p6_m1,p6_m1,prime);
+        //         mpz_cdiv_r_ui(q_p_m1_d9,p6_m1,9);
+        //        gmp_printf("r= %Zd\n",q_p_m1_d9);
+        
+        mpz_cdiv_q_ui(q_p_m1_d9,p6_m1,9);
+        mpz_powm(c1_omega,c1_omega,q_p_m1_d9,p_tmp);
+        mpz_powm_ui(c1_omega_bar,c1_omega,2,p_tmp);
+//        gmp_printf("C1_omg = %Zd,\nC1_omg^2 = %Zd\n",c1_omega,c1_omega_bar);
+        
+        int leg = mpz_legendre(c2_tmp,p_tmp);
+        
+        mpz_clear(prime_m1);
+        mpz_clear(p_m1_d3);
+        mpz_clear(p6_m1);
+        mpz_clear(q_p_m1_d9);
+        
+        if ((mpz_cmp_ui(c1_leg,0) != 0 &&  mpz_cmp_ui(c1_leg,1) != 0) && leg == -1)
+        {
+//            gmp_printf("%Zd\n",X);
+            mpz_set(prime,p_tmp);
+//            gmp_printf("p:%Zd\n",p_tmp);
+//            printf("p = %dbit\n\n\n",(int)mpz_sizeinbase(p_tmp,2));
+        }
     }
     else
     {
-        goto CHECK_PRIME;
-    }
-}
-    
-    
-    struct EFp P,RES;
-    int legendle;
-    struct Fp a,x;
-    mpz_t tmp_b;
-    Fp_init(&a);
-    EFp_init(&P);
-    EFp_init(&RES);
-    Fp_init(&x);
-    mpz_init(tmp_b);
-    mpz_set_ui(tmp_b,0);
-    
-    for(;;){
-        mpz_add_ui(tmp_b,tmp_b,1);
-        Fp_set_ui(&x,1);
-        legendle=0;
-        while(legendle!=1){
-            mpz_powm_ui(a.x_0,x.x_0,3,prime);
-            mpz_add(a.x_0,a.x_0,tmp_b);
-            if((legendle=mpz_legendre(a.x_0,prime))==1){
-                Fp_sqrt(&P.py,&a);
-                Fp_set(&P.px,&x);
-                EFp_SCM(&RES,&P,r_order_EFp);
-                if(RES.isInfinity==TRUE){
-                    mpz_set(b,tmp_b);
-                    mpz_clear(tmp_b);
-                    Fp_clear(&a);
-                    Fp_clear(&x);
-                    EFp_clear(&P);
-                    EFp_clear(&RES);
-                    return;
-                }
-            }
-            Fp_add_ui(&x,&x,1);
+        //p=1/21(x^8+5x^7+7x^6+37x^5+188x^4+259x^3+343x^2+1763x+2401)
+        mpz_mul_ui(tmp1,xpow7,5);
+        mpz_add(p_tmp,tmp1,xpow8);
+        mpz_mul_ui(tmp1,xpow6,7);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow5,37);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow4,188);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow3,259);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,xpow2,343);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_mul_ui(tmp1,X,1763);
+        mpz_add(p_tmp,tmp1,p_tmp);
+        mpz_add_ui(p_tmp,p_tmp,2401);
+        
+        mpz_div_ui(prime,p_tmp,21);
+        
+        if(mpz_probab_prime_p(prime,25)==0){
+            gmp_printf("p:%Zd\n",prime);
+            printf("not  prime number!\n");
+            exit(0);
+        }
+        else
+        {
+            goto CHECK_PRIME;
         }
     }
+    
+    mpz_clear(p_tmp);
+    mpz_clear(r_tmp);
+    mpz_clear(t_tmp);
+    mpz_clear(mod4);
+    mpz_clear(p_m1);
+    mpz_clear(xpow2);
+    mpz_clear(xpow3);
+    mpz_clear(xpow4);
+    mpz_clear(xpow5);
+    mpz_clear(xpow6);
+    mpz_clear(xpow7);
+    mpz_clear(xpow8);
+    mpz_clear(tmp1);
+    mpz_clear(tmp2);
     return;
 }
 
@@ -2835,7 +2327,7 @@ void get_C1_C1bar(){
     mpz_powm(c1_leg,c1_leg,p_m1_d3,prime);
     mpz_powm_ui(c1_leg_bar,c1_leg,2,prime);
     
-    gmp_printf("C1=%Zd,\n C1^2=%Zd\n",c1_leg,c1_leg_bar);
+//    gmp_printf("C1=%Zd,\n C1^2=%Zd\n",c1_leg,c1_leg_bar);
     
     mpz_clear(prime_m1);
     mpz_clear(p_m1_d3);
@@ -2861,3 +2353,283 @@ void get_C1omega_C1omegabar(){
     mpz_clear(q_p_m1_d9);
 }
 
+#pragma mark Previous Methods
+void Fp_pow_bin(struct Fp *RES,struct Fp *A,mpz_t B){//RES = A^B
+    unsigned long long i,length;
+    length= (unsigned long long)mpz_sizeinbase(B,2);
+    char B_binary[length];
+    mpz_get_str(B_binary,2,B);
+//    printf("Length: %lld\n",length);
+    //    printf("p: %s\n",&B_binary[0]);
+    
+    struct Fp tmp;
+    Fp_init(&tmp);
+    Fp_set(&tmp,A);
+    
+    for(i=1;B_binary[i]!='\0';i++){
+        Fp_mul(&tmp,&tmp,&tmp);
+        if(B_binary[i]=='1'){
+            Fp_mul(&tmp,&tmp,A);
+        }
+    }
+    Fp_set(RES,&tmp);
+    Fp_clear(&tmp);
+}
+
+void Fp3_mul_prev(struct Fp3 *RES,struct Fp3 *A,struct Fp3 *B){
+    //(a0,a1,a2)*(b0,b1,b2)=(x0y0+xi((a1+a2)(b1+b2)-a1b1-x2y2),xix2y2+(a0+a1)(b0+b1)-x0y0-a1b1,a1b1+(a0+a2)(b0+b2)-x0y0-x2y2)
+    struct Fp A0,A1,A2,tmp_a01,tmp_a12,tmp_a20,tmp_b01,tmp_b12,tmp_b20,A3,A4,A5,tmp;
+    struct Fp3 t_RES;
+    Fp_init(&A0);
+    Fp_init(&A1);
+    Fp_init(&A2);
+    Fp_init(&tmp_a01);
+    Fp_init(&tmp_a12);
+    Fp_init(&tmp_a20);
+    Fp_init(&tmp_b01);
+    Fp_init(&tmp_b12);
+    Fp_init(&tmp_b20);
+    Fp_init(&A3);
+    Fp_init(&A4);
+    Fp_init(&A5);
+    Fp_init(&tmp);
+    Fp3_init(&t_RES);
+    
+    Fp_mul(&A0,&A->a0,&B->a0);//A0=a0*b0
+    Fp_mul(&A1,&A->a1,&B->a1);//A1=a1*b1
+    Fp_mul(&A2,&A->a2,&B->a2);//A2=a2*b2
+    
+    Fp_add(&tmp_a01,&A->a0,&A->a1);//a0+a1
+    Fp_add(&tmp_a12,&A->a1,&A->a2);//a1+a2
+    Fp_add(&tmp_a20,&A->a0,&A->a2);//a2+a0
+    Fp_add(&tmp_b01,&B->a0,&B->a1);//b0+b1
+    Fp_add(&tmp_b12,&B->a1,&B->a2);//b1+b2
+    Fp_add(&tmp_b20,&B->a0,&B->a2);//b2+b0
+    
+    Fp_mul(&A3,&tmp_a01,&tmp_b01);//A3=(a0+a1)(b0+b1)
+    Fp_mul(&A4,&tmp_a12,&tmp_b12);//A4=(a1+a2)(b1+b2)
+    Fp_mul(&A5,&tmp_a20,&tmp_b20);//A5=(a2+a0)(b2+b0)
+    
+    //(a0,a1,a2)*(b0,b1,b2)=(a0b0 + ai((a1+a2)(b1+b2)-a1b1-a2b2), aia2b2+(a0+a1)(b0+b1)-a0b0-a1b1, a1b1+(a0+a2)(b0+b2)-a0b0-a2b2)
+    
+    //t1 = A3 −A1 −A0
+    //t2 = A4−A2−A0+A1
+    //t3 = A5 −A1 −A2
+    //ab = (t0 + c1t3) + (t1 + c1t4)ω + t2ω2.
+    Fp_sub(&A4,&A4,&A1);//A4-A1
+    Fp_sub(&A4,&A4,&A2);//A4-A2-A1        /(a1+a2)(b1+b2)-a1b1-a2b2
+    Fp_mul_ui(&tmp,&A4,C1);
+    Fp_add(&t_RES.a0,&A0,&tmp);
+    
+    Fp_sub(&A3,&A3,&A0);//A3-A0
+    Fp_sub(&A3,&A3,&A1);//t1 = A3-A1-A0
+    Fp_mul_ui(&tmp,&A2,C1);//A2*C1
+    Fp_add(&t_RES.a1,&tmp,&A3);
+    
+    Fp_sub(&A5,&A5,&A0);//A5-A0
+    Fp_sub(&A5,&A5,&A2);//A5-A2-A0
+    Fp_add(&t_RES.a2,&A1,&A5);//A5-A2-A0 + A1;;t2 = A4−A2−A0+A1
+    
+    Fp3_set(RES,&t_RES);
+    
+    Fp_clear(&A0);
+    Fp_clear(&A1);
+    Fp_clear(&A2);
+    Fp_clear(&tmp_a01);
+    Fp_clear(&tmp_a12);
+    Fp_clear(&tmp_a20);
+    Fp_clear(&tmp_b01);
+    Fp_clear(&tmp_b12);
+    Fp_clear(&tmp_b20);
+    Fp_clear(&A3);
+    Fp_clear(&A4);
+    Fp_clear(&A5);
+    Fp_clear(&tmp);
+}
+void Fp3_invert_prev(struct Fp3 *ANS, struct Fp3 *A){
+    struct Fp3 t_ans;
+    Fp3_init(&t_ans);
+    
+    struct Fp T0,T1,t0,t1,t2,t3;
+    Fp_init(&T0);
+    Fp_init(&T1);
+    Fp_init(&t0);
+    Fp_init(&t1);
+    Fp_init(&t2);
+    Fp_init(&t3);
+    
+    // An optimized version of Grewal's Algo. 3   (a,b,c)
+    Fp_mul(&T0,&A->a0,&A->a0);
+    Fp_mul_ui(&t0,&A->a1,C1);
+    
+    Fp_mul(&T1,&t0,&A->a2);
+    Fp_sub(&t1,&T0,&T1); // t1=(a^2-bci) mod q
+    
+    Fp_mul(&T0,&A->a2,&A->a2);
+    Fp_mul_ui(&T0,&T0,C1);
+    Fp_mul(&T1,&A->a0,&A->a1);
+    Fp_sub(&t2,&T0,&T1); // t2=(c^2i-ab) mod q
+    
+    Fp_mul(&T0,&A->a1,&A->a1);
+    Fp_mul(&T1,&A->a0,&A->a2);
+    Fp_sub(&t3,&T0,&T1); // t3=(b^2-ac) mod q
+    
+    Fp_mul(&T0,&t0,&t3);
+    Fp_mul(&T1,&A->a0,&t1);
+    Fp_add(&T0,&T0,&T1); // T0={bi(b^2-ac)+a(a^2-bci)} mod q
+    
+    Fp_mul_ui(&t0,&A->a2,C1);
+    Fp_mul(&T1,&t0,&t2);
+    Fp_add(&t0,&T0,&T1); // t0={ci(c^2i-ab)+{bi(b^2-ac)+a(a^2-bci)}} mod q .0
+    
+    mpz_invert(t0.x_0,t0.x_0,prime);
+    
+    Fp_mul(&t_ans.a0,&t1,&t0);
+    Fp_mul(&t_ans.a1,&t2,&t0);
+    Fp_mul(&t_ans.a2,&t3,&t0);
+    
+    Fp3_set(ANS,&t_ans);
+    
+    Fp3_clear(&t_ans);
+    Fp_clear(&T0);
+    Fp_clear(&T1);
+    Fp_clear(&t0);
+    Fp_clear(&t1);
+    Fp_clear(&t2);
+    Fp_clear(&t3);
+}
+void Fp6_mul_prev(struct Fp6 *RES,struct Fp6 *A,struct Fp6 *B){
+    //x^2-c2=0;c2=-1
+    //= (a0b0 + c2a1b1) + (a0 + a1)(b0 + b1)τ−(a0b0)τ − (a1b1)τ.
+    struct Fp3 tmp1,tmp2,tmp3,tmp4,tmp5,tmp6;
+    Fp3_init(&tmp1);
+    Fp3_init(&tmp2);
+    Fp3_init(&tmp3);
+    Fp3_init(&tmp4);
+    Fp3_init(&tmp5);
+    Fp3_init(&tmp6);
+    
+    struct Fp6 t_RES;
+    Fp6_init(&t_RES);
+    
+    Fp3_mul(&tmp1,&A->a0,&B->a0);//a0*b0
+    Fp3_mul(&tmp2,&A->a1,&B->a1);//a1*b1
+    Fp3_mul_omega(&tmp3,&tmp2);//c2*a1*b1
+    //    Fp3_mul_omega(&tmp3,&tmp2);
+    Fp3_add(&t_RES.a0,&tmp1,&tmp3);//a*c+b*d*v
+    Fp3_add(&tmp4,&A->a0,&A->a1);//a+b
+    Fp3_add(&tmp5,&B->a0,&B->a1);//c+d
+    Fp3_mul(&tmp6,&tmp4,&tmp5);//(a+b)(c+d)
+    Fp3_sub(&t_RES.a1,&tmp6,&tmp1);
+    Fp3_sub(&t_RES.a1,&t_RES.a1,&tmp2);
+    
+    Fp6_set(RES,&t_RES);
+    
+    Fp3_clear(&tmp1);
+    Fp3_clear(&tmp2);
+    Fp3_clear(&tmp3);
+    Fp3_clear(&tmp4);
+    Fp3_clear(&tmp5);
+    Fp3_clear(&tmp6);
+    Fp6_clear(&t_RES);
+}
+void Fp6_pow_prev(struct Fp6 *RES,struct Fp6 *A,mpz_t B){
+    int i,length;
+    length= (int)mpz_sizeinbase(B,2);
+    char B_binary[length];
+    mpz_get_str(B_binary,2,B);
+    struct Fp6 tmp;
+    Fp6_init(&tmp);
+    Fp6_set(&tmp,A);
+    for(i=1;B_binary[i]!='\0';i++){
+        Fp6_mul(&tmp,&tmp,&tmp);
+        if(B_binary[i]=='1'){
+            Fp6_mul(&tmp,&tmp,A);
+        }
+    }
+    Fp6_set(RES,&tmp);
+    Fp6_clear(&tmp);
+}
+void Fp6_invert_prev(struct Fp6 *ANS, struct Fp6 *A){
+    struct Fp6 tmp;
+    Fp6_init(&tmp);
+    
+    // tmp=A^(q^6)=(x0,-x1)
+    Fp3_set(&tmp.a0,&A->a0);
+    Fp3_neg(&tmp.a1,&A->a1);
+    
+    struct Fp3 c,a,b;
+    Fp3_init(&c);
+    Fp3_init(&a);
+    Fp3_init(&b);
+    
+    Fp3_mul(&a,&A->a0,&A->a0); // a=x0^2
+    Fp3_mul(&b,&A->a1,&A->a1); // b=x1^2
+    Fp3_mul_omega(&b,&b); // b=x1^2*v
+    Fp3_sub(&c,&a,&b); // c=x0^2-x1^2*v mod q
+    
+    Fp3_invert(&c,&c);
+    
+    // ANS=A^{-1}=(c)^{-1}*A^(p^6) A which c is Fp6-element and tmp is a vector A Fp6
+    Fp3_mul(&tmp.a0,&tmp.a0,&c);
+    Fp3_mul(&tmp.a1,&tmp.a1,&c);
+    
+    Fp6_set(ANS,&tmp);
+    
+    Fp3_clear(&c);
+    Fp3_clear(&a);
+    Fp3_clear(&b);
+    Fp6_clear(&tmp);
+}
+void Fp18_invert_prev(struct Fp18 *RES, struct Fp18 *A){
+    struct Fp18 t_RES;
+    Fp18_init(&t_RES);
+    
+    struct Fp6 T0,T1,t0,t1,t2,t3;
+    Fp6_init(&T0);
+    Fp6_init(&T1);
+    Fp6_init(&t0);
+    Fp6_init(&t1);
+    Fp6_init(&t2);
+    Fp6_init(&t3);
+    
+    // An optimized version of Grewal's Algo. 3   (a,b,c)
+    Fp6_mul(&T0,&A->m0,&A->m0);
+    Fp6_mul_tau(&t0,&A->m1);//TODO
+    
+    Fp6_mul(&T1,&t0,&A->m2);
+    Fp6_sub(&t1,&T0,&T1); // t1=(a^2-bci) mod q
+    
+    Fp6_mul(&T0,&A->m2,&A->m2);
+    Fp6_mul_tau(&T0,&T0);
+    Fp6_mul(&T1,&A->m0,&A->m1);
+    Fp6_sub(&t2,&T0,&T1); // t2=(c^2i-ab) mod q
+    
+    Fp6_mul(&T0,&A->m1,&A->m1);
+    Fp6_mul(&T1,&A->m0,&A->m2);
+    Fp6_sub(&t3,&T0,&T1); // t3=(b^2-ac) mod q
+    
+    Fp6_mul(&T0,&t0,&t3);
+    Fp6_mul(&T1,&A->m0,&t1);
+    Fp6_add(&T0,&T0,&T1); // T0={bi(b^2-ac)+a(a^2-bci)} mod q
+    
+    Fp6_mul_tau(&t0,&A->m2);
+    Fp6_mul(&T1,&t0,&t2);
+    Fp6_add(&t0,&T0,&T1); // t0={ci(c^2i-ab)+{bi(b^2-ac)+a(a^2-bci)}} mod q .0
+    
+    Fp6_invert(&t0,&t0);
+//    Fp6_printf(&t0);
+    Fp6_mul(&t_RES.m0,&t1,&t0);
+    Fp6_mul(&t_RES.m1,&t2,&t0);
+    Fp6_mul(&t_RES.m2,&t3,&t0);
+    
+    Fp18_set(RES,&t_RES);
+    
+    Fp18_clear(&t_RES);
+    Fp6_clear(&T0);
+    Fp6_clear(&T1);
+    Fp6_clear(&t0);
+    Fp6_clear(&t1);
+    Fp6_clear(&t2);
+    Fp6_clear(&t3);
+}
